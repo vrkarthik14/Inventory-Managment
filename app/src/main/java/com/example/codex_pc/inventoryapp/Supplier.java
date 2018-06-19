@@ -11,6 +11,8 @@ public class Supplier {
 
     //Constructor
 
+    public Supplier() {}
+
     public Supplier(String name, String address, String email, String mobileNo, String company, ArrayList<Product> products) {
         Name = name;
         Address = address;

@@ -28,6 +28,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Supplier supplier = new Supplier("Akhilesh","Why should i tell you","someone@gmail.com","9999999999","Voltronex",null);
+
+        ((MyAppData)this.getApplication()).pushProduct(new Product(
+                "Table",
+                "",
+                "images/hardware_inventory_logo.png",
+                "0000000000000",
+                supplier,
+                10000,
+                4,
+                1
+        ));
+
         navList = findViewById(R.id.navList);
 
         list = new ArrayList<>();

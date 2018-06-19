@@ -1,6 +1,7 @@
 package com.example.codex_pc.inventoryapp;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.database.ChildEventListener;
@@ -10,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MyAppData extends Application{
 
@@ -39,129 +41,134 @@ public class MyAppData extends Application{
 
         product_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                products.add((Product) dataSnapshot.getValue());
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
+                try {
+                    Product product = dataSnapshot.getValue(Product.class);
+                    assert product != null;
+                    Log.d("FirebaseHandler", String.valueOf(product.getQuantity()));
+                } catch (Exception e){
+                    Log.d("FirebaseHandler",e.toString());
+                }
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
         customer_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 customers.add((Customer) dataSnapshot.getValue());
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.i("changed child",dataSnapshot.getValue().toString());
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+                Log.i("changed child", Objects.requireNonNull(dataSnapshot.getValue()).toString());
 
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.i("removed child",dataSnapshot.getValue().toString());
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("removed child", Objects.requireNonNull(dataSnapshot.getValue()).toString());
 
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
         supplier_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 suppliers.add((Supplier) dataSnapshot.getValue());
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.i("changed child",dataSnapshot.getValue().toString());
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+                Log.i("changed child", Objects.requireNonNull(dataSnapshot.getValue()).toString());
 
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.i("removed child",dataSnapshot.getValue().toString());
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("removed child", Objects.requireNonNull(dataSnapshot.getValue()).toString());
 
 
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
         transaction_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 transactions.add((Transaction) dataSnapshot.getValue());
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.i("changed child",dataSnapshot.getValue().toString());
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+                Log.i("changed child", Objects.requireNonNull(dataSnapshot.getValue()).toString());
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.i("remove child",dataSnapshot.getValue().toString());
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("remove child", Objects.requireNonNull(dataSnapshot.getValue()).toString());
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
     }
 
-
-    public void pushProducts(Product product){
+    public void pushProduct(Product product){
         product_databaseReference.push().setValue(product);
     }
 
-    public void pushSuplliers(Supplier supplier){
+    public void pushSupllier(Supplier supplier){
         supplier_databaseReference.push().setValue(supplier);
     }
 
-    public void pushCustomers(Customer customer){
+    public void pushCustomer(Customer customer){
         customer_databaseReference.push().setValue(customer);
     }
     public void pushTransaction(Transaction transaction){

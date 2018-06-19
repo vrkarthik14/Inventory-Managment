@@ -9,6 +9,8 @@ public class Transaction {
 
         //Constructors
 
+    public Transaction() {}
+
     public Transaction(String productID, String productName, String date, String time, String name, int quantity, int price, int isSending) {
         ProductID = productID;
         ProductName = productName;

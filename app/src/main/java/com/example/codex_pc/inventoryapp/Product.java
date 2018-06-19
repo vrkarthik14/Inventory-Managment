@@ -10,6 +10,8 @@ public class Product {
 
     //Constructor
 
+    public Product() {}
+
     public Product(String name, String desc, String imagePath, String ID, Supplier supplier, int price, int quantity, int condition) {
         Name = name;
         Desc = desc;

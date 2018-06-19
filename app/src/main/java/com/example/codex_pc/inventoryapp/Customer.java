@@ -11,6 +11,8 @@ public class Customer {
 
     //Constructor
 
+    public Customer() {}
+
     public Customer(String name, String address, String email, String mobileNo, String company, int isCustomer,ArrayList<Product> products) {
         Name = name;
         Address = address;

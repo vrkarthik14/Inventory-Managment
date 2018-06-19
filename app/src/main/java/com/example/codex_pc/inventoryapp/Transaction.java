@@ -3,7 +3,7 @@ package com.example.codex_pc.inventoryapp;
 public class Transaction {
 
     private String ProductID, ProductName, Date, Time, Supplier, Customer;
-    private int Quantity, Price;
+    private int Quantity, Price, isSupply;
 
     //==============================================================================================
 
@@ -16,6 +16,7 @@ public class Transaction {
         ProductName = productName;
         Date = date;
         Time = time;
+        this.isSupply = isSending;
         if(isSending==1){
             Supplier = name;
         } else {
@@ -61,6 +62,10 @@ public class Transaction {
         return Price;
     }
 
+    public int getIsSupply() {
+        return isSupply;
+    }
+
     //==============================================================================================
 
         //Setters
@@ -95,6 +100,10 @@ public class Transaction {
 
     public void setPrice(int price) {
         Price = price;
+    }
+
+    public void setIsSupply(int isSending) {
+        this.isSupply = isSending;
     }
 
     //==============================================================================================

@@ -20,6 +20,9 @@ public class MyAppData extends Application{
     ArrayList<Transaction> transactions;
 
     Product product;
+    Supplier supplier;
+    Customer customer;
+    Transaction transaction;
 
     @Override
     public void onCreate() {
@@ -165,7 +168,41 @@ public class MyAppData extends Application{
         transaction_databaseReference.push().setValue(transaction);
     }
 
+    //==============================================================================================
 
+        //Setters and Getters for current items
 
+    public Product getProduct() {
+        return product;
+    }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
+    //==============================================================================================
 }

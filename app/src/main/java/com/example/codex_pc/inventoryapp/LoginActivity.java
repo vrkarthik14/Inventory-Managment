@@ -14,8 +14,6 @@ import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -201,53 +199,5 @@ public class LoginActivity extends AppCompatActivity {
                 .show();
     }
 
-    //==============================================================================================
 
-        // TODO: Move these into a menu on the MainActivity or
-        // TODO: whichever Activity is used for navigation
-
-    public void SignOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        Log.d("MainActivity","Signed Out");
-                    }
-                });
-
-        //Uncomment these to move back to login activity
-        /* final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-            }
-        }, 1000); */
-    }
-
-    public void DeleteAccountAndSignOut() {
-        AuthUI.getInstance()
-                .delete(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        Log.d("LoginPage","Signed Out and Deleted Account");
-                    }
-                });
-
-        //Uncomment these to move back to login activity
-        /* final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-            }
-        }, 1000); */
-    }
-
-    //==============================================================================================
 }

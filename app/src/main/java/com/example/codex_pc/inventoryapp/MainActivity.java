@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Supplier supplier = new Supplier("Akhilesh","Why should i tell you","someone@gmail.com","9999999999","Voltronex",null);
+        /* Supplier supplier = new Supplier("Akhilesh","Why should i tell you","someone@gmail.com","9999999999","Voltronex",null);
 
         ((MyAppData)this.getApplication()).pushProduct(new Product(
                 "Table",
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 10000,
                 4,
                 1
-        ));
+        )); */
 
         navList = findViewById(R.id.navList);
 

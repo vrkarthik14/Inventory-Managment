@@ -1,6 +1,6 @@
 package com.example.codex_pc.inventoryapp;
 
-public class Consumer {
+public class Customer {
 
     private String Name,Address,Email,MobileNo,Company;
 
@@ -8,7 +8,7 @@ public class Consumer {
 
     //Constructor
 
-    public Consumer(String name, String address, String email, String mobileNo, String company) {
+    public Customer(String name, String address, String email, String mobileNo, String company) {
         Name = name;
         Address = address;
         Email = email;

@@ -11,6 +11,8 @@ public class MyAppData extends Application{
     ArrayList<Customer> customers;
     ArrayList<Transaction> transactions;
 
+    Product product;
+
     @Override
     public void onCreate() {
         super.onCreate();

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">InventoryApp</string>
+    <string name="login_or_signup">Login or Signup</string>
+    <string name="main_logo">This is the Application\'s Main Logo</string>
 </resources>

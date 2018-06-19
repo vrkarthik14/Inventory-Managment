@@ -94,6 +94,6 @@ public class Transaction {
     public void setPrice(int price) {
         Price = price;
     }
-    
+
     //==============================================================================================
 }

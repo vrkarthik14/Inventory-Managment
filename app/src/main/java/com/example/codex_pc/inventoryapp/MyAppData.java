@@ -1,6 +1,7 @@
 package com.example.codex_pc.inventoryapp;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -68,11 +69,13 @@ public class MyAppData extends Application{
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.i("changed child",dataSnapshot.getValue().toString());
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.i("removed child",dataSnapshot.getValue().toString());
 
             }
 
@@ -95,11 +98,14 @@ public class MyAppData extends Application{
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.i("changed child",dataSnapshot.getValue().toString());
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.i("removed child",dataSnapshot.getValue().toString());
+
 
             }
 
@@ -122,12 +128,12 @@ public class MyAppData extends Application{
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                Log.i("changed child",dataSnapshot.getValue().toString());
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                Log.i("remove child",dataSnapshot.getValue().toString());
             }
 
             @Override

@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">InventoryApp</string>
+    <string name="title_activity_layout1">layout1</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
     <string name="login_or_signup">Login or Signup</string>
     <string name="main_logo">This is the Application\'s Main Logo</string>
 </resources>

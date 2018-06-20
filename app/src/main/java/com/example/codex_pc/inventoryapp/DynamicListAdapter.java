@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 
 public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
+    //Notice : VERYIMPORTANT: set (android:windowSoftInputMode="adjustPan") in the manifest of your formactivity
+    // And also set the listview in that form to have android:descendantFocusability="beforeDescendants"
+
     private Context context;
 
     public DynamicListAdapter(Context context, ArrayList<DynElement> items) {
@@ -33,48 +37,28 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         View listItemView = convertView;
-        final DynElement item = getItem(position);
-        int list_entry_xml;
-
-        assert item != null;
-        switch (item.getType()){
-            case "E": list_entry_xml = R.layout.dynamicform_edittext_item;
-            break;
-
-            case "T": list_entry_xml = R.layout.dynamicform_title_item;
-            break;
-
-            case "L": list_entry_xml = R.layout.dynamicform_line_item;
-            break;
-
-            case "t": list_entry_xml = R.layout.dynamicform_subtext_item;
-            break;
-
-            case "S": list_entry_xml = R.layout.dynamicform_spinner_item;
-            break;
-
-            case "I": list_entry_xml = R.layout.dynamicform_imageupload_item;
-            break;
-
-            default: list_entry_xml = R.layout.dynamicform_line_item;
-            break;
-        }
 
         if (listItemView == null) {
 
             //Inflate to custom list_entry.xml
             listItemView = LayoutInflater.from(getContext()).inflate(
-                    list_entry_xml, parent, false);
+                    R.layout.dynamicform_item, parent, false);
 
         }
 
+        DynElement item = getItem(position);
+
+        assert item != null;
         switch (item.getType()) {
 
             case "E":
 
+                TextInputLayout til = listItemView.findViewById(R.id.dynamic_textInput_item);
                 EditText et = listItemView.findViewById(R.id.dynamic_edittext_item);
-                et.setHint(item.getTitle());
                 et.setInputType(item.getInputTypeing());
+                til.setVisibility(View.VISIBLE);
+                til.setHint(item.getTitle());
+                et.setVisibility(View.VISIBLE);
 
                 et.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -87,7 +71,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        item.setResult1(editable.toString());
+                        //item.setResult1(editable.toString());
                     }
                 });
 
@@ -96,6 +80,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
             case "T": {
 
                 TextView tv = listItemView.findViewById(R.id.dynamic_title_item);
+                tv.setVisibility(View.VISIBLE);
                 tv.setText(item.getTitle());
                 if (item.getBgSource() != 0) {
                     Drawable d = context.getResources().getDrawable(item.getBgSource());
@@ -113,6 +98,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
             case "t": {
 
                 TextView tv = listItemView.findViewById(R.id.dynamic_subtext_item);
+                tv.setVisibility(View.VISIBLE);
                 tv.setText(item.getTitle());
                 if (item.getBgSource() != 0) {
                     Drawable d = context.getResources().getDrawable(item.getBgSource());
@@ -130,6 +116,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
             case "S": {
 
                 Spinner spinner = listItemView.findViewById(R.id.dynamic_spinner_item);
+                spinner.setVisibility(View.VISIBLE);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                         context, android.R.layout.simple_spinner_item, item.getEntries());
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -138,7 +125,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        item.setResult1(item.getEntries().get(i));
+                        //item.setResult1(item.getEntries().get(i));
                     }
 
                     @Override
@@ -148,6 +135,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                 });
 
                 TextView tv = listItemView.findViewById(R.id.dynamic_spinner_title);
+                tv.setVisibility(View.VISIBLE);
                 tv.setText(item.getTitle());
                 if (item.getBgSource() != 0) {
                     Drawable d = context.getResources().getDrawable(item.getBgSource());
@@ -165,6 +153,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
             default:
 
                 ImageView img = listItemView.findViewById(R.id.dynamic_imageupload_item);
+                img.setVisibility(View.VISIBLE);
                 if (item.getImageURI() != null) {
                     img.setImageURI(item.getImageURI());
                 }

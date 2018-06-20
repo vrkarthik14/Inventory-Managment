@@ -43,7 +43,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         //Declare and assign all XML view elements from list_entry : Example
         TextView productName = listItemView.findViewById(R.id.productName);
         TextView productDesc = listItemView.findViewById(R.id.productDescription);
-        TextView productPrice = listItemView.findViewById(R.id.productPrice);
         TextView productQuantity = listItemView.findViewById(R.id.productQuantity);
         TextView productID = listItemView.findViewById(R.id.productID);
         ImageView productIcon = listItemView.findViewById(R.id.productIcon);
@@ -53,7 +52,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             productDesc.setText(currentItem.getDesc());
             productID.setText(currentItem.getID());
             String price = String.valueOf(currentItem.getPrice())+"/-";
-            productPrice.setText(price);
             String quantity = String.valueOf(currentItem.getQuantity());
             productQuantity.setText(quantity);
 

@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -51,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
         adapter = new NavigationAdapter(this, list);
         navList.setAdapter(adapter);
 
+        navList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
+
     }
 
     //==============================================================================================
@@ -74,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sign_out_and_delete_account:
                 DeleteAccountAndSignOut();
                 return true;
+            case R.id.open_form:
+                startActivity(new Intent(MainActivity.this,FormActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

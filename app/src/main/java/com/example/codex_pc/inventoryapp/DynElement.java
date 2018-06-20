@@ -11,7 +11,8 @@ public class DynElement {
     private int bgSource, colorSource, isBold, inputTypeing, result2;
     private Uri imageURI;
 
-    public DynElement() {
+    public DynElement(String type) {
+        this.type = type;
         isBold = 0;
         inputTypeing = 0;
         colorSource = 0;

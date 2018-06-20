@@ -2,8 +2,10 @@ package com.example.codex_pc.inventoryapp;
 
 public class Transaction {
 
-    private String ProductID, ProductName, Date, Time, Supplier, Customer;
+    private String ProductID, ProductName, Date, Time;
     private int Quantity, Price, isSupply;
+    private Supplier supplier;
+    private Customer customer;
 
     //==============================================================================================
 
@@ -17,11 +19,6 @@ public class Transaction {
         Date = date;
         Time = time;
         this.isSupply = isSending;
-        if(isSending==1){
-            Supplier = name;
-        } else {
-            Customer = name;
-        }
         Quantity = quantity;
         Price = price;
     }
@@ -46,12 +43,12 @@ public class Transaction {
         return Time;
     }
 
-    public String getSupplier() {
-        return Supplier;
+    public Supplier getSupplier() {
+        return supplier;
     }
 
-    public String getCustomer() {
-        return Customer;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public int getQuantity() {
@@ -86,12 +83,12 @@ public class Transaction {
         Time = time;
     }
 
-    public void setSupplier(String supplier) {
-        Supplier = supplier;
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
-    public void setCustomer(String customer) {
-        Customer = customer;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public void setQuantity(int quantity) {

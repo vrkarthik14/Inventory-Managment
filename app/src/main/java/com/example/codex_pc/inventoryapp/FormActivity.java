@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -84,7 +85,6 @@ public class FormActivity extends AppCompatActivity {
                 }
                 if(selection==0 && i==elements.size()-1){
                     launchChooserDialog();
-                    launchSupplierDialog();
                 }
             }
         });
@@ -220,6 +220,10 @@ public class FormActivity extends AppCompatActivity {
             }
         }
 
+        if(supplier==null){
+            valid = false;
+        }
+
          if(selection==0 && valid){
 
             Product product = new Product();
@@ -230,11 +234,16 @@ public class FormActivity extends AppCompatActivity {
             product.setDesc(elements.get(7).getResult1());
             product.setID(elements.get(8).getResult1());
             product.setCondition(elements.get(9).getResult1());
-            //product.setSupplier();
+            product.setSupplier(supplier);
 
             ((MyAppData) this.getApplication()).pushProduct(product);
 
-             //Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
+             Transaction transaction = new Transaction();
+             transaction.setProductName(product.getName());
+             transaction.setDate(getCurrentDate());
+             transaction.setTime(getCurrentTime());
+             transaction.setIsSupply(1);
+             transaction.setSupplier(supplier);
              //((MyAppData)this.getApplication()).pushTransaction(transaction);
 
          } else if(selection==1 && valid) {
@@ -282,7 +291,36 @@ public class FormActivity extends AppCompatActivity {
 
     private void launchChooserDialog() {
 
+        AlertDialog.Builder alert = new AlertDialog.Builder(FormActivity.this);
+        alert.setTitle("Choose Supplier");
 
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FormActivity.this, android.R.layout.select_dialog_singlechoice);
+        final ArrayList<Supplier> suppliers = ((MyAppData)FormActivity.this.getApplication()).getSuppliers();
+        for (int i=0;i<suppliers.size();i++){
+            arrayAdapter.add(suppliers.get(i).getName());
+        }
+        arrayAdapter.add("Add New");
+
+        alert.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alert.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strName = arrayAdapter.getItem(which);
+                assert strName != null;
+                if(strName.equals("Add New")){
+                    launchSupplierDialog();
+                } else {
+                    supplier = suppliers.get(which);
+                }
+            }
+        });
+        alert.show();
 
     }
 

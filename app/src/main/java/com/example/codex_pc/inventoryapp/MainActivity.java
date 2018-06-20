@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                         ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
                         break;
                     case 1:
-                        startActivity(new Intent(MainActivity.this,SupplierActicity.class));
+                        startActivity(new Intent(MainActivity.this,SupplierActivity.class));
                         ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
                         break;
 
@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.sign_out_and_delete_account:
                 DeleteAccountAndSignOut();
+                return true;
+            case R.id.open_form:
+                startActivity(new Intent(MainActivity.this, FormActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

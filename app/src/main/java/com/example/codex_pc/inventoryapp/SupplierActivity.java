@@ -1,14 +1,15 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class SupplierActicity extends AppCompatActivity {
+public class SupplierActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,7 @@ public class SupplierActicity extends AppCompatActivity {
         addSuppliers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(SupplierActivity.this, FormActivity.class));
             }
         });
 

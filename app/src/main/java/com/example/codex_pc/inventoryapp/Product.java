@@ -2,8 +2,8 @@ package com.example.codex_pc.inventoryapp;
 
 public class Product {
 
-    private String Name, Desc, imagePath, ID;
-    private int Price, Quantity, Condition;
+    private String Name, Desc, imagePath, ID, Condition;
+    private int Price, Quantity;
     private Supplier supplier;
 
     //==============================================================================================
@@ -12,7 +12,7 @@ public class Product {
 
     public Product() {}
 
-    public Product(String name, String desc, String imagePath, String ID, Supplier supplier, int price, int quantity, int condition) {
+    public Product(String name, String desc, String imagePath, String ID, Supplier supplier, int price, int quantity, String condition) {
         Name = name;
         Desc = desc;
         this.imagePath = imagePath;
@@ -51,7 +51,7 @@ public class Product {
         return Quantity;
     }
 
-    public int getCondition() {
+    public String getCondition() {
         return Condition;
     }
 
@@ -91,7 +91,7 @@ public class Product {
         Quantity = quantity;
     }
 
-    public void setCondition(int condition) {
+    public void setCondition(String condition) {
         Condition = condition;
     }
 

@@ -1,5 +1,6 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ public class CustomerActivity extends AppCompatActivity {
         addCustomers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(CustomerActivity.this, FormActivity.class));
             }
         });
 

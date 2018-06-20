@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -17,8 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +39,7 @@ public class FormActivity extends AppCompatActivity {
 
     int selection;
     private final static int RESULT_LOAD_IMG = 1;
+    Uri imageUri;
 
     Supplier supplier;
 
@@ -100,9 +105,22 @@ public class FormActivity extends AppCompatActivity {
                 Uri selectedImage = data.getData();
                 elements.get(0).setImageURI(selectedImage);
                 adapter.notifyDataSetChanged();
-                String path = "inventory/" + UUID.randomUUID() + ".jpg";
+                imageUri = selectedImage;
+                final String path = "inventory/" + UUID.randomUUID() + ".jpg";
+                assert selectedImage != null;
                 StorageReference ref = FirebaseStorage.getInstance().getReference().child(path);
-                elements.get(0).setResult1(path);
+                ref.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        elements.get(0).setResult1(path);
+                        Toast.makeText(getApplicationContext(),"Image Uploaded",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("ErrorHandler","Error uploading image");
+                    }
+                });
             }
         }
 
@@ -112,7 +130,7 @@ public class FormActivity extends AppCompatActivity {
 
         Log.d("ListHandler","Fired");
 
-        ArrayList<DynElement> elements = new ArrayList<>();
+        ArrayList<DynElement> items = new ArrayList<>();
 
         DynElement element0 = new DynElement("I");
 
@@ -152,24 +170,24 @@ public class FormActivity extends AppCompatActivity {
         DynElement element11 = new DynElement("S");
         element11.setTitle("Enter Supplier Details");
 
-        elements.add(element0);
-        elements.add(element1);
-        elements.add(element2);
-        elements.add(element3);
-        elements.add(element4);
-        elements.add(element5);
-        elements.add(element6);
-        elements.add(element7);
-        elements.add(element8);
-        elements.add(element9);
-        elements.add(element10);
-        elements.add(element11);
+        items.add(element0);
+        items.add(element1);
+        items.add(element2);
+        items.add(element3);
+        items.add(element4);
+        items.add(element5);
+        items.add(element6);
+        items.add(element7);
+        items.add(element8);
+        items.add(element9);
+        items.add(element10);
+        items.add(element11);
 
-        return elements;
+        return items;
     }
 
     public ArrayList<DynElement> createSupplierOrCustomerForm(String s) {
-        ArrayList<DynElement> elements = new ArrayList<>();
+        ArrayList<DynElement> items = new ArrayList<>();
 
         DynElement element0 = new DynElement("G");
         element0.setGapSize(8);
@@ -199,16 +217,16 @@ public class FormActivity extends AppCompatActivity {
         element5.setTitle(s + " Company");
         element5.setInputTypeing(InputType.TYPE_CLASS_TEXT);
 
-        elements.add(element0);
-        elements.add(element);
-        elements.add(dash);
-        elements.add(element1);
-        elements.add(element2);
-        elements.add(element3);
-        elements.add(element4);
-        elements.add(element5);
+        items.add(element0);
+        items.add(element);
+        items.add(dash);
+        items.add(element1);
+        items.add(element2);
+        items.add(element3);
+        items.add(element4);
+        items.add(element5);
 
-        return elements;
+        return items;
 
     }
 
@@ -239,9 +257,9 @@ public class FormActivity extends AppCompatActivity {
             product.setQuantity(Integer.parseInt(elements.get(6).getResult1()));
             product.setDesc(elements.get(7).getResult1());
             product.setID(elements.get(8).getResult1());
-            product.setCondition(elements.get(9).getResult1());
+            product.setCondition(elements.get(10).getResult1());
             product.setSupplier(supplier);
-            product.setImagePath(elements.get(0).getImagePath());
+            product.setImagePath(elements.get(0).getResult1());
 
             ((MyAppData) this.getApplication()).pushProduct(product);
 
@@ -255,6 +273,8 @@ public class FormActivity extends AppCompatActivity {
              transaction.setPrice(product.getPrice());
              ((MyAppData)this.getApplication()).pushTransaction(transaction);
 
+             finish();
+
          } else if(selection==1 && valid) {
 
             Supplier supplier = new Supplier();
@@ -265,6 +285,8 @@ public class FormActivity extends AppCompatActivity {
             supplier.setCompany(elements.get(7).getResult1());
             ((MyAppData)this.getApplication()).pushSupllier(supplier);
 
+            finish();
+
          } else if(selection==2 && valid) {
 
              Customer customer = new Customer();
@@ -274,6 +296,8 @@ public class FormActivity extends AppCompatActivity {
              customer.setMobileNo(elements.get(6).getResult1());
              customer.setCompany(elements.get(7).getResult1());
              ((MyAppData)this.getApplication()).pushCustomer(customer);
+
+             finish();
 
          } else {
 

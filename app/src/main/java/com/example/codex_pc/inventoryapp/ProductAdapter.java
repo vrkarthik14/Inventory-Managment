@@ -55,14 +55,16 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             String quantity = String.valueOf(currentItem.getQuantity());
             productQuantity.setText(quantity);
 
-            // Reference to an image file in Cloud Storage
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(currentItem.getImagePath());
+            if(currentItem.getImagePath()!=null) {
+                // Reference to an image file in Cloud Storage
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(currentItem.getImagePath());
 
-            // Download directly from StorageReference using Glide
-            // (See MyAppGlideModule for Loader registration)
-            Glide.with(context)
-                    .load(storageReference)
-                    .into(productIcon);
+                // Download directly from StorageReference using Glide
+                // (See MyAppGlideModule for Loader registration)
+                Glide.with(context)
+                        .load(storageReference)
+                        .into(productIcon);
+            }
         }
 
         return listItemView;

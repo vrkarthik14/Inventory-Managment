@@ -8,7 +8,7 @@ public class DynElement {
 
     private String title,type,resulttype,result1;
     private ArrayList<String> entries;
-    private int bgSource, colorSource, isBold, inputTypeing, result2;
+    private int bgSource, colorSource, isBold, inputTypeing, result2, gapSize;
     private Uri imageURI;
 
     public DynElement(String type) {
@@ -18,6 +18,7 @@ public class DynElement {
         colorSource = 0;
         bgSource = 0;
         imageURI = null;
+        gapSize = 4;
     }
 
     //==============================================================================================
@@ -66,6 +67,10 @@ public class DynElement {
         return imageURI;
     }
 
+    public int getGapSize() {
+        return gapSize;
+    }
+
     //==============================================================================================
 
     public void setTitle(String title) {
@@ -110,6 +115,10 @@ public class DynElement {
 
     public void setImageURI(Uri imageURI) {
         this.imageURI = imageURI;
+    }
+
+    public void setGapSize(int gapSize) {
+        this.gapSize = gapSize;
     }
 
     //==============================================================================================

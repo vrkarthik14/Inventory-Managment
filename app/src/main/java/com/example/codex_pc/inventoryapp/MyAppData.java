@@ -26,6 +26,8 @@ public class MyAppData extends Application{
     Customer customer;
     Transaction transaction;
 
+    int selection = 0;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -207,10 +209,17 @@ public class MyAppData extends Application{
 
     //==============================================================================================
 
+    public int getSelection() {
+        return selection;
+    }
 
+    public void setSelection(int selection) {
+        this.selection = selection;
+    }
 
-    //Getters for arraylists
+    //==============================================================================================
 
+        //Getters for arraylists
 
     public ArrayList<Product> getProducts() {
         return products;
@@ -227,4 +236,6 @@ public class MyAppData extends Application{
     public ArrayList<Transaction> getTransactions() {
         return transactions;
     }
+
+    //==============================================================================================
 }

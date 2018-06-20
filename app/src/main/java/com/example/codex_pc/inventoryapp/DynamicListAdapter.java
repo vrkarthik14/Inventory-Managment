@@ -46,7 +46,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
         }
 
-        DynElement item = getItem(position);
+        final DynElement item = getItem(position);
 
         assert item != null;
         switch (item.getType()) {
@@ -71,7 +71,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        //item.setResult1(editable.toString());
+                        item.setResult1(editable.toString());
                     }
                 });
 
@@ -125,7 +125,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        //item.setResult1(item.getEntries().get(i));
+                        item.setResult1(item.getEntries().get(i));
                     }
 
                     @Override
@@ -150,6 +150,25 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
                 break;
             }
+
+            case "G": {
+                TextView tv = listItemView.findViewById(R.id.dynamic_gap_item);
+                tv.setVisibility(View.VISIBLE);
+                tv.setHeight(item.getGapSize());
+                break;
+            }
+
+            case "L": {
+                TextView tv = listItemView.findViewById(R.id.dynamic_line_item);
+                tv.setVisibility(View.VISIBLE);
+                if(item.getBgSource()!=0){
+                    Drawable d = context.getResources().getDrawable(item.getBgSource());
+                    tv.setBackground(d);
+                }
+                break;
+            }
+
+
             default:
 
                 ImageView img = listItemView.findViewById(R.id.dynamic_imageupload_item);

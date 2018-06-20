@@ -1,8 +1,9 @@
 package com.example.codex_pc.inventoryapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -20,10 +21,24 @@ public class FormActivity extends AppCompatActivity {
 
         mainList = findViewById(R.id.mainList);
 
-        elements = new ArrayList<>();
+        elements = createSupplierOrCustomerForm("Customer");
+
+        adapter = new DynamicListAdapter(this, elements);
+        mainList.setItemsCanFocus(true);
+        mainList.setAdapter(adapter);
+
+    }
+
+    public ArrayList<DynElement> createSupplierOrCustomerForm(String s) {
+        ArrayList<DynElement> elements = new ArrayList<>();
+
+        DynElement element0 = new DynElement("G");
+        element0.setGapSize(8);
+
+        DynElement dash = new DynElement("L");
 
         DynElement element = new DynElement("T");
-        element.setTitle("Enter Supplier Information");
+        element.setTitle("Enter " + s +" Information");
 
         DynElement element1 = new DynElement("E");
         element1.setTitle("Name");
@@ -42,19 +57,22 @@ public class FormActivity extends AppCompatActivity {
         element4.setInputTypeing(InputType.TYPE_CLASS_PHONE);
 
         DynElement element5 = new DynElement("E");
-        element5.setTitle("Supplier Company");
+        element5.setTitle(s + " Company");
         element5.setInputTypeing(InputType.TYPE_CLASS_TEXT);
 
+        elements.add(element0);
         elements.add(element);
+        elements.add(dash);
         elements.add(element1);
         elements.add(element2);
         elements.add(element3);
         elements.add(element4);
         elements.add(element5);
 
-        adapter = new DynamicListAdapter(this, elements);
-        mainList.setItemsCanFocus(true);
-        mainList.setAdapter(adapter);
+        return elements;
 
+    }
+
+    public void Submit(View view) {
     }
 }

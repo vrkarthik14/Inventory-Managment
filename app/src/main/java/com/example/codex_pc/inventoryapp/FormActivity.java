@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -224,6 +225,8 @@ public class FormActivity extends AppCompatActivity {
 
              Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
              ((MyAppData)this.getApplication()).pushTransaction(transaction);
+             }else {
+                 Toast.makeText(this, "Please enter all the fields! ", Toast.LENGTH_SHORT).show();
              }
          }else if(selection == 1){
 
@@ -236,6 +239,8 @@ public class FormActivity extends AppCompatActivity {
                  Supplier supplier = new Supplier(elements.get(3).getResult1(), elements.get(4).getResult1(), elements.get(5).getResult1(), elements.get(6).getResult1(), elements.get(7).getResult1());
                  ((MyAppData) this.getApplication()).pushSupllier(supplier);
 
+             }else {
+                 Toast.makeText(this, "Please enter all the fields! ", Toast.LENGTH_SHORT).show();
              }
          }else{
              if(elements.get(3).getResult1()!=null&&
@@ -246,6 +251,8 @@ public class FormActivity extends AppCompatActivity {
                  Customer customer = new Customer(elements.get(3).getResult1(), elements.get(4).getResult1(), elements.get(5).getResult1(), elements.get(6).getResult1(), elements.get(7).getResult1());
                  ((MyAppData) this.getApplication()).pushCustomer(customer);
 
+             }else {
+                 Toast.makeText(this, "Please enter all the fields! ", Toast.LENGTH_SHORT).show();
              }
          }
     }

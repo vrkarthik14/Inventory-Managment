@@ -93,45 +93,46 @@ public class FormActivity extends AppCompatActivity {
 
         ArrayList<DynElement> elements = new ArrayList<>();
 
-        DynElement element1 = new DynElement("I");
+        DynElement element0 = new DynElement("I");
 
-        DynElement element2 = new DynElement("G");
+        DynElement element1 = new DynElement("G");
 
-        DynElement element3 = new DynElement("T");
-        element3.setTitle("Please enter Product Information");
+        DynElement element2 = new DynElement("T");
+        element2.setTitle("Please enter Product Information");
 
-        DynElement element4 = new DynElement("L");
+        DynElement element3 = new DynElement("L");
+
+        DynElement element4 = new DynElement("E");
+        element4.setTitle("Product Name");
+        element4.setInputTypeing(InputType.TYPE_CLASS_TEXT);
 
         DynElement element5 = new DynElement("E");
-        element5.setTitle("Product Name");
-        element5.setInputTypeing(InputType.TYPE_CLASS_TEXT);
+        element5.setTitle("Product Price");
+        element5.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
 
         DynElement element6 = new DynElement("E");
-        element6.setTitle("Product Price");
+        element6.setTitle("Product Quantity");
         element6.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
 
         DynElement element7 = new DynElement("E");
-        element7.setTitle("Product Quantity");
-        element7.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
+        element7.setTitle("Product Description");
+        element7.setInputTypeing(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
         DynElement element8 = new DynElement("E");
-        element8.setTitle("Product Description");
-        element8.setInputTypeing(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        element8.setTitle("Product ID");
+        element8.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
 
-        DynElement element9 = new DynElement("E");
-        element9.setTitle("Product ID");
-        element9.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
+        DynElement element9 = new DynElement("t");
+        element9.setTitle("Note. long press here to open the barcode scanner");
 
-        DynElement element10 = new DynElement("t");
-        element10.setTitle("Note. long press here to open the barcode scanner");
+        DynElement element10 = new DynElement("S");
+        element10.setTitle("Choose Item Condition");
 
-        DynElement element11 = new DynElement("S");
-        element11.setTitle("Choose Item Condition");
+        DynElement element11 = new DynElement("E");
+        element11.setTitle("Supplier Name");
+        element11.setInputTypeing(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
 
-        DynElement element12 = new DynElement("E");
-        element12.setTitle("Supplier Name");
-        element12.setInputTypeing(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
+        elements.add(element0);
         elements.add(element1);
         elements.add(element2);
         elements.add(element3);
@@ -143,7 +144,6 @@ public class FormActivity extends AppCompatActivity {
         elements.add(element9);
         elements.add(element10);
         elements.add(element11);
-        elements.add(element12);
 
         return elements;
     }

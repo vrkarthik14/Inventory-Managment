@@ -220,7 +220,7 @@ public class FormActivity extends AppCompatActivity {
             }
         }
 
-        if(supplier==null){
+        if(selection==0 &&supplier==null){
             valid = false;
         }
 
@@ -244,16 +244,28 @@ public class FormActivity extends AppCompatActivity {
              transaction.setTime(getCurrentTime());
              transaction.setIsSupply(1);
              transaction.setSupplier(supplier);
-             //((MyAppData)this.getApplication()).pushTransaction(transaction);
+             transaction.setQuantity(product.getQuantity());
+             transaction.setPrice(product.getPrice());
+             ((MyAppData)this.getApplication()).pushTransaction(transaction);
 
          } else if(selection==1 && valid) {
 
-            Supplier supplier = new Supplier(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
+            Supplier supplier = new Supplier();
+            supplier.setName(elements.get(3).getResult1());
+            supplier.setAddress(elements.get(4).getResult1());
+            supplier.setEmail(elements.get(5).getResult1());
+            supplier.setMobileNo(elements.get(6).getResult1());
+            supplier.setCompany(elements.get(7).getResult1());
             ((MyAppData)this.getApplication()).pushSupllier(supplier);
 
          } else if(selection==2 && valid) {
 
-             Customer customer = new Customer(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
+             Customer customer = new Customer();
+             customer.setName(elements.get(3).getResult1());
+             customer.setAddress(elements.get(4).getResult1());
+             customer.setEmail(elements.get(5).getResult1());
+             customer.setMobileNo(elements.get(6).getResult1());
+             customer.setCompany(elements.get(7).getResult1());
              ((MyAppData)this.getApplication()).pushCustomer(customer);
 
          } else {

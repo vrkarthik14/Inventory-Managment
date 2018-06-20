@@ -260,11 +260,11 @@ public class FormActivity extends AppCompatActivity {
             product.setCondition(elements.get(10).getResult1());
             product.setSupplier(supplier);
             product.setImagePath(elements.get(0).getResult1());
-
             ((MyAppData) this.getApplication()).pushProduct(product);
 
              Transaction transaction = new Transaction();
              transaction.setProductName(product.getName());
+             transaction.setProductID(product.getID());
              transaction.setDate(getCurrentDate());
              transaction.setTime(getCurrentTime());
              transaction.setIsSupply(1);

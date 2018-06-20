@@ -12,7 +12,9 @@ import java.util.ArrayList;
 
 public class CustomerActivity extends AppCompatActivity {
 
-    ArrayList<Customer> customers;
+    static ArrayList<Customer> customers;
+    static CustomerAdapter customerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +24,7 @@ public class CustomerActivity extends AppCompatActivity {
 
         customers= ((MyAppData)this.getApplication()).getCustomers();
         //Log.i("Check",products.get(0).getName());
-        final CustomerAdapter customerAdapter = new CustomerAdapter(this,customers);
+        customerAdapter = new CustomerAdapter(this,customers);
         ListView product_list_view = findViewById(R.id.customer_list);
         product_list_view.setAdapter(customerAdapter);
 

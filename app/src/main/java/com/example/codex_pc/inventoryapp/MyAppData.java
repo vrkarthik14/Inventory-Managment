@@ -72,6 +72,12 @@ public class MyAppData extends Application{
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 customers.add(dataSnapshot.getValue(Customer.class));
+                try {
+                    CustomerActivity.customers = customers;
+                    CustomerActivity.customerAdapter.notifyDataSetChanged();
+                } catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
+                }
             }
 
             @Override

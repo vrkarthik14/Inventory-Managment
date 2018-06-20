@@ -201,6 +201,15 @@ public class FormActivity extends AppCompatActivity {
 
     public void Submit(View view) {
          if(selection == 0){
+
+             if(elements.get(4).getResult1() != null &&
+                     elements.get(7).getResult1()!=null &&
+                     elements.get(0).getImageURI().toString() != null &&
+                     elements.get(8).getResult1()!=null &&
+                     elements.get(11).getResult1()!=null &&
+                     elements.get(5).getResult2()!= 0&&
+                     elements.get(6).getResult2()!= 0&&
+                     elements.get(10).getResult1()!=null){
              Product product = new Product(elements.get(4).getResult1(),elements.get(7).getResult1(),elements.get(0).getImageURI().toString(),elements.get(8).getResult1(),elements.get(11).getResult1()
                      ,elements.get(5).getResult2(),elements.get(6).getResult2(),elements.get(10).getResult1());
              ((MyAppData)this.getApplication()).pushProduct(product);
@@ -215,18 +224,29 @@ public class FormActivity extends AppCompatActivity {
 
              Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
              ((MyAppData)this.getApplication()).pushTransaction(transaction);
-
+             }
          }else if(selection == 1){
 
+             if(elements.get(3).getResult1()!=null&&
+                     elements.get(4).getResult1()!=null&&
+                     elements.get(5).getResult1()!=null&&
+                     elements.get(6).getResult1()!=null&&
+                     elements.get(7).getResult1()!=null) {
 
-                 Supplier supplier = new Supplier(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
-                 ((MyAppData)this.getApplication()).pushSupllier(supplier);
+                 Supplier supplier = new Supplier(elements.get(3).getResult1(), elements.get(4).getResult1(), elements.get(5).getResult1(), elements.get(6).getResult1(), elements.get(7).getResult1());
+                 ((MyAppData) this.getApplication()).pushSupllier(supplier);
 
-
+             }
          }else{
-             Customer customer = new Customer(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
-             ((MyAppData)this.getApplication()).pushCustomer(customer);
+             if(elements.get(3).getResult1()!=null&&
+                     elements.get(4).getResult1()!=null&&
+                     elements.get(5).getResult1()!=null&&
+                     elements.get(6).getResult1()!=null&&
+                     elements.get(7).getResult1()!=null) {
+                 Customer customer = new Customer(elements.get(3).getResult1(), elements.get(4).getResult1(), elements.get(5).getResult1(), elements.get(6).getResult1(), elements.get(7).getResult1());
+                 ((MyAppData) this.getApplication()).pushCustomer(customer);
 
+             }
          }
     }
 

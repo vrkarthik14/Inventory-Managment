@@ -17,20 +17,21 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 public class FormActivity extends AppCompatActivity {
 
     ListView mainList;
     ArrayList<DynElement> elements;
     DynamicListAdapter adapter;
-    DatabaseReference databaseReference;
 
     int selection;
     private final static int RESULT_LOAD_IMG = 1;
@@ -99,6 +100,9 @@ public class FormActivity extends AppCompatActivity {
                 Uri selectedImage = data.getData();
                 elements.get(0).setImageURI(selectedImage);
                 adapter.notifyDataSetChanged();
+                String path = "inventory/" + UUID.randomUUID() + ".jpg";
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child(path);
+                elements.get(0).setResult1(path);
             }
         }
 
@@ -213,7 +217,7 @@ public class FormActivity extends AppCompatActivity {
         Boolean valid = true;
 
         for (int i=0;i<elements.size();i++) {
-            if(!elements.get(i).getType().equals("G") && !elements.get(i).getType().equals("L") && !elements.get(i).getType().equals("I")
+            if(!elements.get(i).getType().equals("G") && !elements.get(i).getType().equals("L")
                     && !elements.get(i).getType().equals("T") && !elements.get(i).getType().equals("t")){
                 if(elements.get(i).getResult1().equals("")){
                     valid = false;
@@ -237,6 +241,7 @@ public class FormActivity extends AppCompatActivity {
             product.setID(elements.get(8).getResult1());
             product.setCondition(elements.get(9).getResult1());
             product.setSupplier(supplier);
+            product.setImagePath(elements.get(0).getImagePath());
 
             ((MyAppData) this.getApplication()).pushProduct(product);
 

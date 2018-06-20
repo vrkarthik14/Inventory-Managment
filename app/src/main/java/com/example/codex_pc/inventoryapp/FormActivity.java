@@ -225,9 +225,11 @@ public class FormActivity extends AppCompatActivity {
 
              Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
              ((MyAppData)this.getApplication()).pushTransaction(transaction);
+                 finish();
              }else {
                  Toast.makeText(this, "Please enter all the fields! ", Toast.LENGTH_SHORT).show();
              }
+
          }else if(selection == 1){
 
              if(elements.get(3).getResult1()!=null&&
@@ -238,10 +240,12 @@ public class FormActivity extends AppCompatActivity {
 
                  Supplier supplier = new Supplier(elements.get(3).getResult1(), elements.get(4).getResult1(), elements.get(5).getResult1(), elements.get(6).getResult1(), elements.get(7).getResult1());
                  ((MyAppData) this.getApplication()).pushSupllier(supplier);
+                 finish();
 
              }else {
                  Toast.makeText(this, "Please enter all the fields! ", Toast.LENGTH_SHORT).show();
              }
+
          }else{
              if(elements.get(3).getResult1()!=null&&
                      elements.get(4).getResult1()!=null&&
@@ -250,11 +254,15 @@ public class FormActivity extends AppCompatActivity {
                      elements.get(7).getResult1()!=null) {
                  Customer customer = new Customer(elements.get(3).getResult1(), elements.get(4).getResult1(), elements.get(5).getResult1(), elements.get(6).getResult1(), elements.get(7).getResult1());
                  ((MyAppData) this.getApplication()).pushCustomer(customer);
+                 finish();
 
              }else {
                  Toast.makeText(this, "Please enter all the fields! ", Toast.LENGTH_SHORT).show();
              }
+
          }
+
+
     }
 
     private void scrollMyListViewToBottom() {

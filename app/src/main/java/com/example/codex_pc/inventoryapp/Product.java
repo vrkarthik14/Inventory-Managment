@@ -2,7 +2,7 @@ package com.example.codex_pc.inventoryapp;
 
 public class Product {
 
-    private String Name, Desc, imagePath, ID, Condition,supplier_name;
+    private String Name, Desc, imagePath=null, ID, Condition,supplier_name;
     private int Price, Quantity;
 
     //==============================================================================================

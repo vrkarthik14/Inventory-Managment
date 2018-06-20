@@ -46,7 +46,16 @@ public class FormActivity extends AppCompatActivity {
         mainList.setItemsCanFocus(true);
         mainList.setAdapter(adapter);
 
-        scrollMyListViewToBottom();
+        mainList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                mainList.removeOnLayoutChangeListener(this);
+                Log.d("Handler", "list got updated, do what ever u want");
+                closeDialog();
+            }
+        });
+
+        adapter.notifyDataSetChanged();
 
         mainList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -82,6 +91,7 @@ public class FormActivity extends AppCompatActivity {
         dialog = new AlertDialog.Builder(FormActivity.this)
                 .setTitle("Loading...")
                 .create();
+        dialog.show();
     }
 
     public void closeDialog() {
@@ -216,6 +226,16 @@ public class FormActivity extends AppCompatActivity {
             public void run() {
                 // Select the last row so it will scroll into view...
                 mainList.setSelection(adapter.getCount() - 1);
+            }
+        });
+    }
+
+    private void scrollMyListViewToTop() {
+        mainList.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                mainList.setSelection(0);
             }
         });
     }

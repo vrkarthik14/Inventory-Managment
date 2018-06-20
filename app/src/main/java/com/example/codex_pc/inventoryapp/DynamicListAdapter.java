@@ -11,11 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,60 +35,94 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         View listItemView = convertView;
+        final DynElement item = getItem(position);
+        int list_entry_xml;
+
+        assert item != null;
+        switch (item.getType()){
+            case "E": list_entry_xml = R.layout.dynamic_edittext_list_item;
+                break;
+
+            case "T": list_entry_xml = R.layout.dynamic_title_list_item;
+                break;
+
+            case "L": list_entry_xml = R.layout.dynamic_line_list_item;
+                break;
+
+            case "t": list_entry_xml = R.layout.dynamic_subtext_list_item;
+                break;
+
+            case "S": list_entry_xml = R.layout.dynamic_selector_list_item;
+                break;
+
+            case "I": list_entry_xml = R.layout.dynamic_image_list_item;
+                break;
+
+            case "G": list_entry_xml = R.layout.dynamic_gap_list_item;
+                break;
+
+                default:list_entry_xml = R.layout.dynamic_line_list_item;
+                break;
+        }
 
         if (listItemView == null) {
 
             //Inflate to custom list_entry.xml
             listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.dynamicform_item, parent, false);
+                    list_entry_xml, parent, false);
 
         }
 
-        final DynElement item = getItem(position);
-
-        assert item != null;
         switch (item.getType()) {
 
             case "E":
 
                 TextInputLayout til = listItemView.findViewById(R.id.dynamic_textInput_item);
                 EditText et = listItemView.findViewById(R.id.dynamic_edittext_item);
-                et.setInputType(item.getInputTypeing());
-                til.setVisibility(View.VISIBLE);
-                til.setHint(item.getTitle());
-                et.setVisibility(View.VISIBLE);
+                try {
 
-                et.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if(item.getInputTypeing()!=0) {
+                        et.setInputType(item.getInputTypeing());
                     }
+                    til.setHint(item.getTitle());
+                    et.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
 
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    }
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
 
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        item.setResult1(editable.toString());
-                    }
-                });
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            item.setResult1(editable.toString());
+                        }
+                    });
+
+                } catch (Exception e){
+                    Log.d("Error Handler",e.toString());
+                }
 
                 break;
 
             case "T": {
 
                 TextView tv = listItemView.findViewById(R.id.dynamic_title_item);
-                tv.setVisibility(View.VISIBLE);
-                tv.setText(item.getTitle());
-                if (item.getBgSource() != 0) {
-                    Drawable d = context.getResources().getDrawable(item.getBgSource());
-                    tv.setBackground(d);
-                }
-                if (item.getColorSource() != 0) {
-                    tv.setTextColor(item.getColorSource());
-                }
-                if (item.getIsBold() != 0) {
-                    tv.setTypeface(Typeface.DEFAULT_BOLD);
+                try {
+                    tv.setText(item.getTitle());
+                    if (item.getBgSource() != 0) {
+                        Drawable d = context.getResources().getDrawable(item.getBgSource());
+                        tv.setBackground(d);
+                    }
+                    if (item.getColorSource() != 0) {
+                        tv.setTextColor(item.getColorSource());
+                    }
+                    if (item.getIsBold() != 0) {
+                        tv.setTypeface(Typeface.DEFAULT_BOLD);
+                    }
+                } catch (Exception e){
+                    Log.d("Error Handler",e.toString());
                 }
 
                 break;
@@ -98,54 +130,45 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
             case "t": {
 
                 TextView tv = listItemView.findViewById(R.id.dynamic_subtext_item);
-                tv.setVisibility(View.VISIBLE);
-                tv.setText(item.getTitle());
-                if (item.getBgSource() != 0) {
-                    Drawable d = context.getResources().getDrawable(item.getBgSource());
-                    tv.setBackground(d);
-                }
-                if (item.getColorSource() != 0) {
-                    tv.setTextColor(item.getColorSource());
-                }
-                if (item.getIsBold() != 0) {
-                    tv.setTypeface(Typeface.DEFAULT_BOLD);
+                try {
+                    tv.setText(item.getTitle());
+
+                    if (item.getBgSource() != 0) {
+                        Drawable d = context.getResources().getDrawable(item.getBgSource());
+                        tv.setBackground(d);
+                    }
+                    if (item.getColorSource() != 0) {
+                        tv.setTextColor(item.getColorSource());
+                    }
+                    if (item.getIsBold() != 0) {
+                        tv.setTypeface(Typeface.DEFAULT_BOLD);
+                    }
+
+                } catch (Exception e){
+                    Log.d("Error Handler",e.toString());
                 }
 
                 break;
             }
             case "S": {
 
-                Spinner spinner = listItemView.findViewById(R.id.dynamic_spinner_item);
-                spinner.setVisibility(View.VISIBLE);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        context, android.R.layout.simple_spinner_item, item.getEntries());
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
+                TextView tv = listItemView.findViewById(R.id.dynamic_selector_item);
+                try {
+                    tv.setText(item.getTitle());
 
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        item.setResult1(item.getEntries().get(i));
+                    if (item.getBgSource() != 0) {
+                        Drawable d = context.getResources().getDrawable(item.getBgSource());
+                        tv.setBackground(d);
+                    }
+                    if (item.getColorSource() != 0) {
+                        tv.setTextColor(item.getColorSource());
+                    }
+                    if (item.getIsBold() != 0) {
+                        tv.setTypeface(Typeface.DEFAULT_BOLD);
                     }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        Log.d("ErrorHandler", "Error occured in spinner");
-                    }
-                });
-
-                TextView tv = listItemView.findViewById(R.id.dynamic_spinner_title);
-                tv.setVisibility(View.VISIBLE);
-                tv.setText(item.getTitle());
-                if (item.getBgSource() != 0) {
-                    Drawable d = context.getResources().getDrawable(item.getBgSource());
-                    tv.setBackground(d);
-                }
-                if (item.getColorSource() != 0) {
-                    tv.setTextColor(item.getColorSource());
-                }
-                if (item.getIsBold() != 0) {
-                    tv.setTypeface(Typeface.DEFAULT_BOLD);
+                } catch (Exception e){
+                    Log.d("Error Handler",e.toString());
                 }
 
                 break;
@@ -153,28 +176,38 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
             case "G": {
                 TextView tv = listItemView.findViewById(R.id.dynamic_gap_item);
-                tv.setVisibility(View.VISIBLE);
-                tv.setHeight(item.getGapSize());
+                try {
+                    tv.setHeight(item.getGapSize());
+                } catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
+                }
                 break;
             }
 
             case "L": {
                 TextView tv = listItemView.findViewById(R.id.dynamic_line_item);
-                tv.setVisibility(View.VISIBLE);
-                if(item.getBgSource()!=0){
-                    Drawable d = context.getResources().getDrawable(item.getBgSource());
-                    tv.setBackground(d);
+                try {
+                    if(item.getBgSource()!=0){
+                        Drawable d = context.getResources().getDrawable(item.getBgSource());
+                        tv.setBackground(d);
+                    }
+                } catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
                 }
+
                 break;
             }
 
 
             default:
 
-                ImageView img = listItemView.findViewById(R.id.dynamic_imageupload_item);
-                img.setVisibility(View.VISIBLE);
-                if (item.getImageURI() != null) {
-                    img.setImageURI(item.getImageURI());
+                ImageView img = listItemView.findViewById(R.id.dynamic_image_item);
+                try {
+                    if (item.getImageURI() != null) {
+                        img.setImageURI(item.getImageURI());
+                    }
+                }   catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
                 }
 
                 break;

@@ -1,8 +1,10 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -13,6 +15,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class FormActivity extends AppCompatActivity {
+
+    AlertDialog dialog;
 
     ListView mainList;
     ArrayList<DynElement> elements;
@@ -25,6 +29,8 @@ public class FormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
+
+        startDialog();
 
         mainList = findViewById(R.id.mainList);
 
@@ -40,6 +46,8 @@ public class FormActivity extends AppCompatActivity {
         mainList.setItemsCanFocus(true);
         mainList.setAdapter(adapter);
 
+        scrollMyListViewToBottom();
+
         mainList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -50,9 +58,34 @@ public class FormActivity extends AppCompatActivity {
                     // Start the Intent
                     startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
                 }
+                if(selection==0 && i==10){
+
+                    final String[] items = {"No Issues","Under Repair","Damaged"};
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(FormActivity.this);
+                    alert.setTitle("Choose Condition");
+                    alert.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            // Do something with the selection
+                            elements.get(10).setResult1(items[item]);
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                }
             }
         });
 
+    }
+
+    public void startDialog() {
+        dialog = new AlertDialog.Builder(FormActivity.this)
+                .setTitle("Loading...")
+                .create();
+    }
+
+    public void closeDialog() {
+        dialog.dismiss();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -107,11 +140,7 @@ public class FormActivity extends AppCompatActivity {
         element10.setTitle("Note. long press the input to open the barcode scanner");
 
         DynElement element11 = new DynElement("S");
-        ArrayList<String> entries = new ArrayList<>();
-        entries.add("No Issues");
-        entries.add("Damaged");
-        entries.add("Under repair");
-        element11.setEntries(entries);
+        element11.setTitle("Choose Item Condition");
 
         DynElement element12 = new DynElement("E");
         element12.setTitle("Supplier Name");
@@ -180,4 +209,15 @@ public class FormActivity extends AppCompatActivity {
     public void Submit(View view) {
 
     }
+
+    private void scrollMyListViewToBottom() {
+        mainList.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                mainList.setSelection(adapter.getCount() - 1);
+            }
+        });
+    }
+
 }

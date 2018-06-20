@@ -2,12 +2,9 @@ package com.example.codex_pc.inventoryapp;
 
 import android.net.Uri;
 
-import java.util.ArrayList;
-
 public class DynElement {
 
     private String title,type,resulttype,result1;
-    private ArrayList<String> entries;
     private int bgSource, colorSource, isBold, inputTypeing, result2, gapSize;
     private Uri imageURI;
 
@@ -39,10 +36,6 @@ public class DynElement {
 
     public String getResult1() {
         return result1;
-    }
-
-    public ArrayList<String> getEntries() {
-        return entries;
     }
 
     public int getBgSource() {
@@ -89,10 +82,6 @@ public class DynElement {
 
     public void setResult1(String result1) {
         this.result1 = result1;
-    }
-
-    public void setEntries(ArrayList<String> entries) {
-        this.entries = entries;
     }
 
     public void setBgSource(int bgSource) {

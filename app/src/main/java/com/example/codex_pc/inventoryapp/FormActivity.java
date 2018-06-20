@@ -217,6 +217,7 @@ public class FormActivity extends AppCompatActivity {
                     && !elements.get(i).getType().equals("T") && !elements.get(i).getType().equals("t")){
                 if(elements.get(i).getResult1().equals("")){
                     valid = false;
+                    Log.d("ErrorHandler","It becomes false in " + String.valueOf(i));
                 }
             }
         }
@@ -330,6 +331,7 @@ public class FormActivity extends AppCompatActivity {
                     launchSupplierDialog();
                 } else {
                     supplier = suppliers.get(which);
+                    elements.get(11).setResult1(supplier.getName());
                 }
             }
         });
@@ -389,6 +391,8 @@ public class FormActivity extends AppCompatActivity {
                             supplier.setCompany(CompanyBox.getText().toString());
                             supplier.setEmail(emailBox.getText().toString());
                             supplier.setMobileNo(MobileNoBox.getText().toString());
+                            elements.get(11).setResult1(supplier.getName());
+
                             alert.dismiss();
                         }
                     }

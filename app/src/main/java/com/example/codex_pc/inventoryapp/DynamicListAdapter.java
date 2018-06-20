@@ -95,11 +95,12 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
 
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            item.setResult1(String.valueOf(charSequence));
                         }
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                            item.setResult1(editable.toString());
+
                         }
                     });
 

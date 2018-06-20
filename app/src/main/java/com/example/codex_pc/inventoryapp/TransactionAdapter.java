@@ -42,10 +42,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             String qty,name;
             if(currentItem.getIsSupply()==1) {
                 qty = "Supplied " +String.valueOf(currentItem.getQuantity()) + " from";
-                name = currentItem.getSupplier();
+                name = currentItem.getSupplier().getName();
             } else {
                 qty = "Issed " + String.valueOf(currentItem.getQuantity()) + " to";
-                name = currentItem.getCustomer();
+                name = currentItem.getCustomer().getName();
             }
             ProductNameandProductID.setText(pnid);
             quantity.setText(qty);

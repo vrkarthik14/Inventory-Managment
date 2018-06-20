@@ -42,7 +42,5 @@ public class CustomerActivity extends AppCompatActivity {
                 refreshLayout3.setRefreshing(false);
             }
         });
-
-
     }
 }

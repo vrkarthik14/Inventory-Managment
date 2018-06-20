@@ -23,7 +23,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".FormActivity" android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".FormActivity" />
+        <activity android:name=".ProductActivity" />
+        <activity android:name=".SupplierActicity" />
+        <activity android:name=".CustomerActivity" />
+        <activity android:name=".TransactionAcivity"></activity>
     </application>
 
 </manifest>

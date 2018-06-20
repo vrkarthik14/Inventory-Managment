@@ -42,13 +42,7 @@ public class MyAppData extends Application{
         product_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                try {
-                    Product product = dataSnapshot.getValue(Product.class);
-                    assert product != null;
-                    Log.d("FirebaseHandler", String.valueOf(product.getQuantity()));
-                } catch (Exception e){
-                    Log.d("FirebaseHandler",e.toString());
-                }
+                products.add(dataSnapshot.getValue(Product.class));
             }
 
             @Override
@@ -75,7 +69,7 @@ public class MyAppData extends Application{
         customer_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                customers.add((Customer) dataSnapshot.getValue());
+                customers.add(dataSnapshot.getValue(Customer.class));
             }
 
             @Override
@@ -104,7 +98,7 @@ public class MyAppData extends Application{
         supplier_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                suppliers.add((Supplier) dataSnapshot.getValue());
+                suppliers.add( dataSnapshot.getValue(Supplier.class));
             }
 
             @Override
@@ -134,7 +128,7 @@ public class MyAppData extends Application{
         transaction_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                transactions.add((Transaction) dataSnapshot.getValue());
+                transactions.add( dataSnapshot.getValue(Transaction.class));
             }
 
             @Override
@@ -212,4 +206,25 @@ public class MyAppData extends Application{
     }
 
     //==============================================================================================
+
+
+
+    //Getters for arraylists
+
+
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    public ArrayList<Supplier> getSuppliers() {
+        return suppliers;
+    }
+
+    public ArrayList<Customer> getCustomers() {
+        return customers;
+    }
+
+    public ArrayList<Transaction> getTransactions() {
+        return transactions;
+    }
 }

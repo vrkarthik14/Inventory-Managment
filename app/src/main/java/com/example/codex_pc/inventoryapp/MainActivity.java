@@ -56,7 +56,16 @@ public class MainActivity extends AppCompatActivity {
         navList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                switch (i){
+                    case 0:
+                        startActivity(new Intent(MainActivity.this,ProductActivity.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(MainActivity.this,SupplierActicity.class));
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -83,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sign_out_and_delete_account:
                 DeleteAccountAndSignOut();
                 return true;
-            case R.id.open_form:
-                startActivity(new Intent(MainActivity.this,FormActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -12,7 +12,8 @@ import java.util.ArrayList;
 
 public class ProductActivity extends AppCompatActivity {
 
-    ArrayList<Product> products;
+    static ArrayList<Product> products;
+    static ProductAdapter productAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +23,7 @@ public class ProductActivity extends AppCompatActivity {
 
          products = ((MyAppData)this.getApplication()).getProducts();
         //Log.i("Check",products.get(0).getName());
-        final ProductAdapter productAdapter = new ProductAdapter(this,products);
+        productAdapter = new ProductAdapter(this,products);
         ListView product_list_view = findViewById(R.id.product_list);
         product_list_view.setAdapter(productAdapter);
         FloatingActionButton addProducts = findViewById(R.id.add_products);

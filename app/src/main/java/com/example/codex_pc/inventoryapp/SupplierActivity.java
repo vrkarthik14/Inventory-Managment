@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class SupplierActivity extends AppCompatActivity {
 
-    ArrayList<Supplier> suppliers;
-
+    static ArrayList<Supplier> suppliers;
+    static SupplierAdapter supplierAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +23,7 @@ public class SupplierActivity extends AppCompatActivity {
 
         suppliers = ((MyAppData)this.getApplication()).getSuppliers();
         //Log.i("Check",products.get(0).getName());
-        final SupplierAdapter supplierAdapter = new SupplierAdapter(this,suppliers);
+         supplierAdapter = new SupplierAdapter(this,suppliers);
         ListView product_list_view = findViewById(R.id.supplier_list);
         product_list_view.setAdapter(supplierAdapter);
 

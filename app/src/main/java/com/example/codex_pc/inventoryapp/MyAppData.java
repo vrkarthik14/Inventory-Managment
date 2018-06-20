@@ -45,6 +45,12 @@ public class MyAppData extends Application{
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 products.add(dataSnapshot.getValue(Product.class));
+                try{
+                    ProductActivity.products = products;
+                    ProductActivity.productAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
+                }
             }
 
             @Override
@@ -107,6 +113,12 @@ public class MyAppData extends Application{
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 suppliers.add( dataSnapshot.getValue(Supplier.class));
+                try{
+                    SupplierActivity.suppliers = suppliers;
+                    SupplierActivity.supplierAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
+                }
             }
 
             @Override
@@ -137,6 +149,12 @@ public class MyAppData extends Application{
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 transactions.add( dataSnapshot.getValue(Transaction.class));
+                try{
+                    TransactionAcivity.transactions = transactions;
+                    TransactionAcivity.transactionAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    Log.d("ErrorHandler",e.toString());
+                }
             }
 
             @Override

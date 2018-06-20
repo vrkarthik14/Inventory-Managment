@@ -1,7 +1,9 @@
 package com.example.codex_pc.inventoryapp;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,6 +21,13 @@ public class ProductActivity extends AppCompatActivity {
         ProductAdapter productAdapter = new ProductAdapter(this,products);
         ListView product_list_view = findViewById(R.id.product_list);
         product_list_view.setAdapter(productAdapter);
+        FloatingActionButton addProducts = findViewById(R.id.add_products);
+        addProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
     }
 

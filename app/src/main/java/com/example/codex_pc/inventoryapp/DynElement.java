@@ -7,6 +7,7 @@ public class DynElement {
     private String title,type,resulttype,result1;
     private int bgSource, colorSource, isBold, inputTypeing, result2, gapSize;
     private Uri imageURI;
+    private String imagePath;
 
     public DynElement(String type) {
         this.type = type;
@@ -66,6 +67,10 @@ public class DynElement {
         return gapSize;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
     //==============================================================================================
 
     public void setTitle(String title) {
@@ -110,6 +115,10 @@ public class DynElement {
 
     public void setGapSize(int gapSize) {
         this.gapSize = gapSize;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     //==============================================================================================

@@ -213,7 +213,8 @@ public class FormActivity extends AppCompatActivity {
         Boolean valid = true;
 
         for (int i=0;i<elements.size();i++) {
-            if(!elements.get(i).getType().equals("G") && !elements.get(i).getType().equals("L") && !elements.get(i).getType().equals("I")){
+            if(!elements.get(i).getType().equals("G") && !elements.get(i).getType().equals("L") && !elements.get(i).getType().equals("I")
+                    && !elements.get(i).getType().equals("T") && !elements.get(i).getType().equals("t")){
                 if(elements.get(i).getResult1().equals("")){
                     valid = false;
                 }

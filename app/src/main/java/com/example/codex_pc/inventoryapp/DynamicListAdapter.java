@@ -16,6 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 
 public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
@@ -205,6 +208,12 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                 try {
                     if (item.getImageURI() != null) {
                         img.setImageURI(item.getImageURI());
+                    }
+                    if (item.getImagePath() != null){
+                        StorageReference ref = FirebaseStorage.getInstance().getReference().child(item.getImagePath());
+                        GlideApp.with(context)
+                                .load(ref)
+                                .into(img);
                     }
                 }   catch (Exception e){
                     Log.d("ErrorHandler",e.toString());

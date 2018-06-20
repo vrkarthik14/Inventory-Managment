@@ -12,13 +12,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.firebase.database.DatabaseReference;
+
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class FormActivity extends AppCompatActivity {
 
     ListView mainList;
     ArrayList<DynElement> elements;
     DynamicListAdapter adapter;
+    DatabaseReference databaseReference;
 
     int selection;
     private final static int RESULT_LOAD_IMG = 1;
@@ -193,7 +200,34 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void Submit(View view) {
+         if(selection == 0){
+             Product product = new Product(elements.get(4).getResult1(),elements.get(7).getResult1(),elements.get(0).getImageURI().toString(),elements.get(8).getResult1(),elements.get(11).getResult1()
+                     ,elements.get(5).getResult2(),elements.get(6).getResult2(),elements.get(10).getResult1());
+             ((MyAppData)this.getApplication()).pushProduct(product);
+             Date c = Calendar.getInstance().getTime();
 
+             SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+             String formattedDate = df.format(c);
+
+             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+             String tim = simpleDateFormat.format(c);
+
+
+             Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
+             ((MyAppData)this.getApplication()).pushTransaction(transaction);
+
+         }else if(selection == 1){
+
+
+                 Supplier supplier = new Supplier(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
+                 ((MyAppData)this.getApplication()).pushSupllier(supplier);
+
+
+         }else{
+             Customer customer = new Customer(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
+             ((MyAppData)this.getApplication()).pushCustomer(customer);
+
+         }
     }
 
     private void scrollMyListViewToBottom() {

@@ -1,11 +1,9 @@
 package com.example.codex_pc.inventoryapp;
 
-import java.util.ArrayList;
-
 public class Supplier {
 
     private String Name,Address,Email,MobileNo,Company;
-    private ArrayList<Product> Products;
+
 
     //==============================================================================================
 
@@ -13,13 +11,12 @@ public class Supplier {
 
     public Supplier() {}
 
-    public Supplier(String name, String address, String email, String mobileNo, String company, ArrayList<Product> products) {
+    public Supplier(String name, String address, String email, String mobileNo, String company) {
         Name = name;
         Address = address;
         Email = email;
         MobileNo = mobileNo;
         Company = company;
-        Products = products;
     }
 
     //==============================================================================================
@@ -46,9 +43,7 @@ public class Supplier {
         return Company;
     }
 
-    public ArrayList<Product> getProducts() {
-        return Products;
-    }
+
 
     //==============================================================================================
 
@@ -74,9 +69,6 @@ public class Supplier {
         Company = company;
     }
 
-    public void setProducts(ArrayList<Product> products) {
-        Products = products;
-    }
 
     //==============================================================================================
 

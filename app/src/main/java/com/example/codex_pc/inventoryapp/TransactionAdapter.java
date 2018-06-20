@@ -33,9 +33,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         Transaction currentItem = getItem(position);
 
         //Declare and assign all XML view elements from list_entry : Example
-        TextView ProductNameandProductID = listItemView.findViewById(R.id.listName);
-        TextView quantity = listItemView.findViewById(R.id.listCompanyName);
-        TextView SupplierOrCustomerName = listItemView.findViewById(R.id.listEmail);
+        TextView ProductNameandProductID = listItemView.findViewById(R.id.productIDandProductNameTrans);
+        TextView quantity = listItemView.findViewById(R.id.QuantityTrans);
+        TextView SupplierOrCustomerName = listItemView.findViewById(R.id.SupplierOrConsumerNameTrans);
 
         if (currentItem!=null) {
             String pnid = currentItem.getProductName() + "(" + currentItem.getProductID() + ")";

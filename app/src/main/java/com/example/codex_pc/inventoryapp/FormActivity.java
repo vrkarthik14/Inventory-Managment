@@ -10,15 +10,19 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -29,6 +33,8 @@ public class FormActivity extends AppCompatActivity {
 
     int selection;
     private final static int RESULT_LOAD_IMG = 1;
+
+    Supplier supplier;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +81,10 @@ public class FormActivity extends AppCompatActivity {
                         }
                     });
                     alert.show();
+                }
+                if(selection==0 && i==elements.size()-1){
+                    launchChooserDialog();
+                    launchSupplierDialog();
                 }
             }
         });
@@ -135,9 +145,8 @@ public class FormActivity extends AppCompatActivity {
         DynElement element10 = new DynElement("S");
         element10.setTitle("Choose Item Condition");
 
-        DynElement element11 = new DynElement("E");
-        element11.setTitle("Supplier Name");
-        element11.setInputTypeing(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        DynElement element11 = new DynElement("S");
+        element11.setTitle("Enter Supplier Details");
 
         elements.add(element0);
         elements.add(element1);
@@ -200,34 +209,65 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void Submit(View view) {
-         if(selection == 0){
-             Product product = new Product(elements.get(4).getResult1(),elements.get(7).getResult1(),elements.get(0).getImageURI().toString(),elements.get(8).getResult1(),elements.get(11).getResult1()
-                     ,elements.get(5).getResult2(),elements.get(6).getResult2(),elements.get(10).getResult1());
-             ((MyAppData)this.getApplication()).pushProduct(product);
-             Date c = Calendar.getInstance().getTime();
 
-             SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-             String formattedDate = df.format(c);
+        Boolean valid = true;
 
-             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
-             String tim = simpleDateFormat.format(c);
+        for (int i=0;i<elements.size();i++) {
+            if(!elements.get(i).getType().equals("G") && !elements.get(i).getType().equals("L") && !elements.get(i).getType().equals("I")){
+                if(elements.get(i).getResult1().equals("")){
+                    valid = false;
+                }
+            }
+        }
 
+         if(selection==0 && valid){
 
-             Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
-             ((MyAppData)this.getApplication()).pushTransaction(transaction);
+            Product product = new Product();
 
-         }else if(selection == 1){
+            product.setName(elements.get(4).getResult1());
+            product.setPrice(Integer.parseInt(elements.get(5).getResult1()));
+            product.setQuantity(Integer.parseInt(elements.get(6).getResult1()));
+            product.setDesc(elements.get(7).getResult1());
+            product.setID(elements.get(8).getResult1());
+            product.setCondition(elements.get(9).getResult1());
+            //product.setSupplier();
 
+            ((MyAppData) this.getApplication()).pushProduct(product);
 
-                 Supplier supplier = new Supplier(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
-                 ((MyAppData)this.getApplication()).pushSupllier(supplier);
+             //Transaction transaction = new Transaction(elements.get(8).getResult1(),elements.get(4).getResult1(),formattedDate,tim,elements.get(11).getResult1(),elements.get(6).getResult2(),elements.get(5).getResult2(),1);
+             //((MyAppData)this.getApplication()).pushTransaction(transaction);
 
+         } else if(selection==1 && valid) {
 
-         }else{
+            Supplier supplier = new Supplier(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
+            ((MyAppData)this.getApplication()).pushSupllier(supplier);
+
+         } else if(selection==2 && valid) {
+
              Customer customer = new Customer(elements.get(3).getResult1(),elements.get(4).getResult1(),elements.get(5).getResult1(),elements.get(6).getResult1(),elements.get(7).getResult1());
              ((MyAppData)this.getApplication()).pushCustomer(customer);
 
-         }
+         } else {
+
+            Toast.makeText(getApplicationContext(),"Please Fill All forms",Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    public String getCurrentDate() {
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        return df.format(c);
+
+    }
+
+    public String getCurrentTime() {
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa",Locale.ENGLISH);
+        return  simpleDateFormat.format(c);
+
     }
 
     private void scrollMyListViewToBottom() {
@@ -238,6 +278,81 @@ public class FormActivity extends AppCompatActivity {
                 mainList.setSelection(adapter.getCount() - 1);
             }
         });
+    }
+
+    private void launchChooserDialog() {
+
+
+
+    }
+
+    private void launchSupplierDialog() {
+
+        LinearLayout layout = new LinearLayout(FormActivity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText nameBox = new EditText(FormActivity.this);
+        nameBox.setHint("Name");
+        layout.addView(nameBox);
+
+        final EditText addressBox = new EditText(FormActivity.this);
+        addressBox.setHint("Address");
+        layout.addView(addressBox);
+
+        final EditText emailBox = new EditText(FormActivity.this);
+        emailBox.setHint("Email");
+        layout.addView(emailBox);
+
+        final EditText MobileNoBox = new EditText(FormActivity.this);
+        MobileNoBox.setHint("Mobile Number");
+        layout.addView(MobileNoBox);
+
+        final EditText CompanyBox = new EditText(FormActivity.this);
+        CompanyBox.setHint("Company");
+        layout.addView(CompanyBox);
+
+        final AlertDialog alert = new AlertDialog.Builder(FormActivity.this)
+                .setTitle("Enter Supplier Details")
+                .setView(layout)
+                .setPositiveButton("Create",null)
+                .setNegativeButton("Cancel",null)
+                .create();
+
+        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE);
+                Button button1 = ((AlertDialog) alert).getButton(AlertDialog.BUTTON_NEGATIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if(nameBox.getText().toString().equals("") || addressBox.getText().toString().equals("") ||
+                                MobileNoBox.getText().toString().equals("") || emailBox.getText().toString().equals("") ||
+                                CompanyBox.getText().toString().equals("")){
+                            Toast.makeText(getApplicationContext(),"Please fill all the details",Toast.LENGTH_SHORT).show();
+                        } else {
+                            supplier = new Supplier();
+                            supplier.setName(nameBox.getText().toString());
+                            supplier.setAddress(addressBox.getText().toString());
+                            supplier.setCompany(CompanyBox.getText().toString());
+                            supplier.setEmail(emailBox.getText().toString());
+                            supplier.setMobileNo(MobileNoBox.getText().toString());
+                            alert.dismiss();
+                        }
+                    }
+                });
+                button1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alert.dismiss();
+                    }
+                });
+            }
+        });
+
+        alert.show();
+
     }
 
 }

@@ -16,7 +16,7 @@ public class DynElement {
         bgSource = 0;
         imageURI = null;
         gapSize = 4;
-        result1 = null;
+        result1 = "";
         result2 = -1;
     }
 

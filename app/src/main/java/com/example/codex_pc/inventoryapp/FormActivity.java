@@ -14,6 +14,8 @@ public class FormActivity extends AppCompatActivity {
     ArrayList<DynElement> elements;
     DynamicListAdapter adapter;
 
+    int selection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +23,12 @@ public class FormActivity extends AppCompatActivity {
 
         mainList = findViewById(R.id.mainList);
 
-        elements = createSupplierOrCustomerForm("Customer");
+        selection = ((MyAppData)this.getApplication()).getSelection();
+
+        elements = new ArrayList<>();
+
+        if(selection==1) { elements = createSupplierOrCustomerForm("Supplier"); }
+        else if (selection==2) { elements = createSupplierOrCustomerForm("Customer"); }
 
         adapter = new DynamicListAdapter(this, elements);
         mainList.setItemsCanFocus(true);
@@ -74,5 +81,8 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void Submit(View view) {
+
+        if (selection==1){}
+
     }
 }

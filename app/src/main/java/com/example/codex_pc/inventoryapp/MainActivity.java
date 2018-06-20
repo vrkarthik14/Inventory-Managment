@@ -59,10 +59,23 @@ public class MainActivity extends AppCompatActivity {
                 switch (i){
                     case 0:
                         startActivity(new Intent(MainActivity.this,ProductActivity.class));
+                        ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
                         break;
                     case 1:
                         startActivity(new Intent(MainActivity.this,SupplierActicity.class));
+                        ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
                         break;
+
+                    case 2:
+                        startActivity(new Intent(MainActivity.this,CustomerActivity.class));
+                        ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
+                        break;
+
+                    case 3:
+                        startActivity(new Intent(MainActivity.this,TransactionAcivity.class));
+                        ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
+                        break;
+
                     default:
                         break;
                 }

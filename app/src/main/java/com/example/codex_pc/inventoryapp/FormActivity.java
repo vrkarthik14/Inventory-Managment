@@ -16,8 +16,6 @@ import java.util.ArrayList;
 
 public class FormActivity extends AppCompatActivity {
 
-    AlertDialog dialog;
-
     ListView mainList;
     ArrayList<DynElement> elements;
     DynamicListAdapter adapter;
@@ -29,8 +27,6 @@ public class FormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-
-        startDialog();
 
         mainList = findViewById(R.id.mainList);
 
@@ -46,16 +42,7 @@ public class FormActivity extends AppCompatActivity {
         mainList.setItemsCanFocus(true);
         mainList.setAdapter(adapter);
 
-        mainList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                mainList.removeOnLayoutChangeListener(this);
-                Log.d("Handler", "list got updated, do what ever u want");
-                closeDialog();
-            }
-        });
-
-        adapter.notifyDataSetChanged();
+        scrollMyListViewToBottom();
 
         mainList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,17 +72,6 @@ public class FormActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public void startDialog() {
-        dialog = new AlertDialog.Builder(FormActivity.this)
-                .setTitle("Loading...")
-                .create();
-        dialog.show();
-    }
-
-    public void closeDialog() {
-        dialog.dismiss();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -147,7 +123,7 @@ public class FormActivity extends AppCompatActivity {
         element9.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
 
         DynElement element10 = new DynElement("t");
-        element10.setTitle("Note. long press the input to open the barcode scanner");
+        element10.setTitle("Note. long press here to open the barcode scanner");
 
         DynElement element11 = new DynElement("S");
         element11.setTitle("Choose Item Condition");
@@ -226,16 +202,6 @@ public class FormActivity extends AppCompatActivity {
             public void run() {
                 // Select the last row so it will scroll into view...
                 mainList.setSelection(adapter.getCount() - 1);
-            }
-        });
-    }
-
-    private void scrollMyListViewToTop() {
-        mainList.post(new Runnable() {
-            @Override
-            public void run() {
-                // Select the last row so it will scroll into view...
-                mainList.setSelection(0);
             }
         });
     }

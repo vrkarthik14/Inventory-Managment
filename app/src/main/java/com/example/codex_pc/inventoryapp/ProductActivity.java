@@ -47,6 +47,7 @@ public class ProductActivity extends AppCompatActivity {
         product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((MyAppData)ProductActivity.this.getApplication()).setProduct(products.get(i));
                 startActivity(new Intent(ProductActivity.this,ViewActivity.class));
             }
         });

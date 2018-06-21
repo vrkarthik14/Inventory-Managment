@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -120,7 +121,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                         tv.setBackground(d);
                     }
                     if (item.getColorSource() != 0) {
-                        tv.setTextColor(item.getColorSource());
+                        tv.setTextColor(ContextCompat.getColor(context, item.getColorSource()));
                     }
                     if (item.getIsBold() != 0) {
                         tv.setTypeface(Typeface.DEFAULT_BOLD);
@@ -142,7 +143,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                         tv.setBackground(d);
                     }
                     if (item.getColorSource() != 0) {
-                        tv.setTextColor(item.getColorSource());
+                        tv.setTextColor(ContextCompat.getColor(context, item.getColorSource()));
                     }
                     if (item.getIsBold() != 0) {
                         tv.setTypeface(Typeface.DEFAULT_BOLD);
@@ -165,7 +166,7 @@ public class DynamicListAdapter  extends ArrayAdapter<DynElement> {
                         tv.setBackground(d);
                     }
                     if (item.getColorSource() != 0) {
-                        tv.setTextColor(item.getColorSource());
+                        tv.setTextColor(ContextCompat.getColor(context, item.getColorSource()));
                     }
                     if (item.getIsBold() != 0) {
                         tv.setTypeface(Typeface.DEFAULT_BOLD);

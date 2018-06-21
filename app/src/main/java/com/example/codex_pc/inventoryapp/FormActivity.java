@@ -39,7 +39,7 @@ public class FormActivity extends AppCompatActivity {
 
     int selection;
     private final static int RESULT_LOAD_IMG = 1;
-    Uri imageUri;
+    String imageUri;
 
     Supplier supplier;
 
@@ -105,7 +105,10 @@ public class FormActivity extends AppCompatActivity {
                 Uri selectedImage = data.getData();
                 elements.get(0).setImageURI(selectedImage);
                 adapter.notifyDataSetChanged();
-                imageUri = selectedImage;
+                imageUri = selectedImage.getPath();
+
+                ImageHandler handler = new ImageHandler(FormActivity.this);
+
                 final String path = "inventory/" + UUID.randomUUID() + ".jpg";
                 assert selectedImage != null;
                 StorageReference ref = FirebaseStorage.getInstance().getReference().child(path);
@@ -337,7 +340,7 @@ public class FormActivity extends AppCompatActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(FormActivity.this);
         alert.setTitle("Choose Supplier");
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FormActivity.this, android.R.layout.select_dialog_singlechoice);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(FormActivity.this, android.R.layout.select_dialog_singlechoice);
         final ArrayList<Supplier> suppliers = ((MyAppData)FormActivity.this.getApplication()).getSuppliers();
         for (int i=0;i<suppliers.size();i++){
             arrayAdapter.add(suppliers.get(i).getName());

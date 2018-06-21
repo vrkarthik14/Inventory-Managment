@@ -9,18 +9,19 @@ import java.util.ArrayList;
 
 public class TransactionAcivity extends AppCompatActivity {
 
-    ArrayList<Transaction> transactions;
-
+    static ArrayList<Transaction> transactions;
+    static SwipeRefreshLayout refreshLayout1;
+    static TransactionAdapter transactionAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction);
 
-        final SwipeRefreshLayout refreshLayout1 = findViewById(R.id.swiperefresh3);
+        refreshLayout1 = findViewById(R.id.swiperefresh3);
 
        transactions = ((MyAppData)this.getApplication()).getTransactions();
         //Log.i("Check",products.get(0).getName());
-        final TransactionAdapter transactionAdapter= new TransactionAdapter(this,transactions);
+        transactionAdapter= new TransactionAdapter(this,transactions);
         ListView product_list_view = findViewById(R.id.transactiona_list);
         product_list_view.setAdapter(transactionAdapter);
 

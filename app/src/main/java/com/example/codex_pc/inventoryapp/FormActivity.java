@@ -105,12 +105,10 @@ public class FormActivity extends AppCompatActivity {
                 Uri selectedImage = data.getData();
                 elements.get(0).setImageURI(selectedImage);
                 adapter.notifyDataSetChanged();
-                imageUri = selectedImage.getPath();
-
-                ImageHandler handler = new ImageHandler(FormActivity.this);
+                assert selectedImage != null;
+                imageUri = selectedImage.toString();
 
                 final String path = "inventory/" + UUID.randomUUID() + ".jpg";
-                assert selectedImage != null;
                 StorageReference ref = FirebaseStorage.getInstance().getReference().child(path);
                 ref.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -277,6 +275,9 @@ public class FormActivity extends AppCompatActivity {
              ((MyAppData)this.getApplication()).pushTransaction(transaction);
 
              finish();
+
+             ImageHandler handler = new ImageHandler(FormActivity.this);
+             handler.addImagePath(new localImg(product.getName(),imageUri));
 
          } else if(selection==1 && valid) {
 

@@ -1,7 +1,9 @@
 package com.example.codex_pc.inventoryapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProductAdapter extends ArrayAdapter<Product> {
@@ -38,14 +44,14 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         }
 
         //Get Current CustomClass Object
-        Product currentItem = getItem(position);
+        final Product currentItem = getItem(position);
 
         //Declare and assign all XML view elements from list_entry : Example
         TextView productName = listItemView.findViewById(R.id.productName);
         TextView productDesc = listItemView.findViewById(R.id.productDescription);
         TextView productQuantity = listItemView.findViewById(R.id.productQuantity);
         TextView productID = listItemView.findViewById(R.id.productID);
-        ImageView productIcon = listItemView.findViewById(R.id.productIcon);
+        final ImageView productIcon = listItemView.findViewById(R.id.productIcon);
 
         if (currentItem!=null) {
             productName.setText(currentItem.getName());
@@ -55,15 +61,33 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             String quantity = String.valueOf(currentItem.getQuantity());
             productQuantity.setText(quantity);
 
-            if(currentItem.getImagePath()!=null) {
+            final ImageHandler handler = new ImageHandler(context);
+            if(handler.getImagePath(currentItem.getName())!=null) {
+                Uri imageUri = Uri.parse(handler.getImagePath(currentItem.getName()));
+                productIcon.setImageURI(imageUri);
+
+            } else if(currentItem.getImagePath()!=null) {
                 // Reference to an image file in Cloud Storage
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(currentItem.getImagePath());
 
-                // Download directly from StorageReference using Glide
-                // (See MyAppGlideModule for Loader registration)
-                Glide.with(context)
-                        .load(storageReference)
-                        .into(productIcon);
+                try {
+                    final File localFile = File.createTempFile("inventory", "jpg");
+                    storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Uri imageUri = Uri.fromFile(localFile);
+                            handler.addImagePath(new localImg(currentItem.getName(),imageUri.toString()));
+                            productIcon.setImageURI(imageUri);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("ErrorHandler","Error getting file from firebase storage");
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

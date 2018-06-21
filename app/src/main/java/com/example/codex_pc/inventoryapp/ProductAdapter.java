@@ -1,7 +1,7 @@
 package com.example.codex_pc.inventoryapp;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class ProductAdapter extends ArrayAdapter<Product> {
 
     private Context context;
-    private AppDatabase db;
 
     public ProductAdapter(Context context, ArrayList<Product> items) {
         super(context, 0,items);
@@ -63,11 +62,11 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             String quantity = String.valueOf(currentItem.getQuantity());
             productQuantity.setText(quantity);
 
-            db = Room.databaseBuilder(context.getApplicationContext(),
-                    AppDatabase.class, "image_drive").fallbackToDestructiveMigration().build();
-            String imagePath = db.localImgDao().getImage(currentItem.getName()).getFilePath();
+            final SharedPreferences sharedPref = context.getSharedPreferences(
+                    "images-drive", Context.MODE_PRIVATE);
+            String imagePath = sharedPref.getString(currentItem.getName(), "");
 
-            if(imagePath!=null) {
+            if(!imagePath.equals("")) {
                 Uri imageUri = Uri.parse(imagePath);
                 productIcon.setImageURI(imageUri);
 
@@ -82,7 +81,9 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             Uri imageUri = Uri.fromFile(localFile);
-                            db.localImgDao().insertImage(new LocalImg(currentItem.getName(),imageUri.toString()));
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(currentItem.getName(), imageUri.toString());
+                            editor.apply();
                             productIcon.setImageURI(imageUri);
                         }
                     }).addOnFailureListener(new OnFailureListener() {

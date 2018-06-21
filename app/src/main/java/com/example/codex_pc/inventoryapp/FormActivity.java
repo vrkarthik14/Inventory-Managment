@@ -1,8 +1,9 @@
 package com.example.codex_pc.inventoryapp;
 
-import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -277,9 +278,11 @@ public class FormActivity extends AppCompatActivity {
 
              finish();
 
-             AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-                     AppDatabase.class, "image_drive").fallbackToDestructiveMigration().build();
-             db.localImgDao().insertImage(new LocalImg(product.getName(),imageUri));
+             SharedPreferences sharedPref = FormActivity.this.getSharedPreferences(
+                     "images-drive", Context.MODE_PRIVATE);
+             SharedPreferences.Editor editor = sharedPref.edit();
+             editor.putString(product.getName(), imageUri);
+             editor.apply();
 
 //             ImageHandler handler = new ImageHandler(FormActivity.this);
 //             handler.addImagePath(new LocalImg(product.getName(),imageUri));

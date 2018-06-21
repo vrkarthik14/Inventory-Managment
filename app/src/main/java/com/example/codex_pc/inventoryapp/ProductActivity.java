@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -40,6 +41,13 @@ public class ProductActivity extends AppCompatActivity {
                 products = ((MyAppData)getApplication()).getProducts();
                 productAdapter.notifyDataSetChanged();
                 refreshLayout.setRefreshing(false);
+            }
+        });
+
+        product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                startActivity(new Intent(ProductActivity.this,ViewActivity.class));
             }
         });
 

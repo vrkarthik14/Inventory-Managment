@@ -1,5 +1,6 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -276,8 +277,12 @@ public class FormActivity extends AppCompatActivity {
 
              finish();
 
-             ImageHandler handler = new ImageHandler(FormActivity.this);
-             handler.addImagePath(new localImg(product.getName(),imageUri));
+             AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+                     AppDatabase.class, "image_drive").fallbackToDestructiveMigration().build();
+             db.localImgDao().insertImage(new LocalImg(product.getName(),imageUri));
+
+//             ImageHandler handler = new ImageHandler(FormActivity.this);
+//             handler.addImagePath(new LocalImg(product.getName(),imageUri));
 
          } else if(selection==1 && valid) {
 

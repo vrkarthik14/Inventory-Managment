@@ -1,5 +1,6 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public class ProductAdapter extends ArrayAdapter<Product> {
 
     private Context context;
+    private AppDatabase db;
 
     public ProductAdapter(Context context, ArrayList<Product> items) {
         super(context, 0,items);
@@ -61,11 +63,15 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             String quantity = String.valueOf(currentItem.getQuantity());
             productQuantity.setText(quantity);
 
-            final ImageHandler handler = new ImageHandler(context);
-            if(handler.getImagePath(currentItem.getName())!=null) {
-                Uri imageUri = Uri.parse(handler.getImagePath(currentItem.getName()));
+            db = Room.databaseBuilder(context.getApplicationContext(),
+                    AppDatabase.class, "image_drive").fallbackToDestructiveMigration().build();
+            String imagePath = db.localImgDao().getImage(currentItem.getName()).getFilePath();
+
+            if(imagePath!=null) {
+                Uri imageUri = Uri.parse(imagePath);
                 productIcon.setImageURI(imageUri);
 
+                Log.d("ImageHandler","Local Storage");
             } else if(currentItem.getImagePath()!=null) {
                 // Reference to an image file in Cloud Storage
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(currentItem.getImagePath());
@@ -76,7 +82,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             Uri imageUri = Uri.fromFile(localFile);
-                            handler.addImagePath(new localImg(currentItem.getName(),imageUri.toString()));
+                            db.localImgDao().insertImage(new LocalImg(currentItem.getName(),imageUri.toString()));
                             productIcon.setImageURI(imageUri);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -88,6 +94,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Log.d("ImageHandler","FirebaseStorage");
             }
         }
 

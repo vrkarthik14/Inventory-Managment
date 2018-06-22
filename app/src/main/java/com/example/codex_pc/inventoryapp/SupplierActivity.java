@@ -14,6 +14,18 @@ public class SupplierActivity extends AppCompatActivity {
 
     static ArrayList<Supplier> suppliers;
     static SupplierAdapter supplierAdapter;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (suppliers!=null && supplierAdapter!=null) {
+            suppliers = ((MyAppData)SupplierActivity.this.getApplication()).getSuppliers();
+            supplierAdapter.notifyDataSetChanged();
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +34,7 @@ public class SupplierActivity extends AppCompatActivity {
         final SwipeRefreshLayout refreshLayout2 = findViewById(R.id.swiperefresh2);
 
         suppliers = ((MyAppData)this.getApplication()).getSuppliers();
+
         //Log.i("Check",products.get(0).getName());
          supplierAdapter = new SupplierAdapter(this,suppliers);
         ListView product_list_view = findViewById(R.id.supplier_list);

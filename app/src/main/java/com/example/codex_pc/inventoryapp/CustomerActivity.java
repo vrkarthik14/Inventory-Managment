@@ -1,10 +1,10 @@
 package com.example.codex_pc.inventoryapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
@@ -16,13 +16,25 @@ public class CustomerActivity extends AppCompatActivity {
     static CustomerAdapter customerAdapter;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (customers!=null && customerAdapter!=null) {
+            customers = ((MyAppData)CustomerActivity.this.getApplication()).getCustomers();
+            customerAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer);
 
         final SwipeRefreshLayout refreshLayout3 = findViewById(R.id.swiperefresh1);
 
-        customers= ((MyAppData)this.getApplication()).getCustomers();
+        customers = ((MyAppData)this.getApplication()).getCustomers();
+
         //Log.i("Check",products.get(0).getName());
         customerAdapter = new CustomerAdapter(this,customers);
         ListView product_list_view = findViewById(R.id.customer_list);

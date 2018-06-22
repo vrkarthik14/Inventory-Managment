@@ -1,17 +1,29 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class TransactionAcivity extends AppCompatActivity {
+public class TransactionActivity extends AppCompatActivity {
 
     static ArrayList<Transaction> transactions;
     static SwipeRefreshLayout refreshLayout1;
     static TransactionAdapter transactionAdapter;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (transactions!=null && transactionAdapter!=null) {
+            transactions = ((MyAppData)TransactionActivity.this.getApplication()).getTransactions();
+            transactionAdapter.notifyDataSetChanged();
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +32,7 @@ public class TransactionAcivity extends AppCompatActivity {
         refreshLayout1 = findViewById(R.id.swiperefresh3);
 
        transactions = ((MyAppData)this.getApplication()).getTransactions();
+
         //Log.i("Check",products.get(0).getName());
         transactionAdapter= new TransactionAdapter(this,transactions);
         ListView product_list_view = findViewById(R.id.transactiona_list);

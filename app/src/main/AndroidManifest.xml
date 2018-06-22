@@ -34,7 +34,7 @@
         <activity android:name=".ProductActivity" />
         <activity android:name=".SupplierActivity" />
         <activity android:name=".CustomerActivity" />
-        <activity android:name=".TransactionAcivity" />
+        <activity android:name=".TransactionActivity" />
         <activity android:name=".ViewActivity" android:screenOrientation="portrait" />
     </application>
 

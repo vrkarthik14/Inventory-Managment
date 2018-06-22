@@ -563,7 +563,7 @@ public class FormActivity extends AppCompatActivity {
 
         dialog = new MaterialDialog.Builder(this)
                 .title("Progress")
-                .content("Submitting,Please wait...")
+                .content("Submitting, Please wait...")
                 .progress(true, 0)
                 .show();
 

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case 3:
-                        startActivity(new Intent(MainActivity.this,TransactionAcivity.class));
+                        startActivity(new Intent(MainActivity.this,TransactionActivity.class));
                         ((MyAppData)MainActivity.this.getApplication()).setSelection(i);
                         break;
 

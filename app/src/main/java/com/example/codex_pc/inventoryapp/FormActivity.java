@@ -1,5 +1,6 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -107,7 +108,7 @@ public class FormActivity extends AppCompatActivity {
                 assert selectedImage!=null;
                 image.setImageURI(selectedImage);
 
-                imagePath = "inventory/" + UUID.randomUUID() + ".jpg";
+                imagePath = "inventory/" + UUID.randomUUID().toString() + ".jpg";
                 this.selectedImage = selectedImage;
 
             }
@@ -185,6 +186,7 @@ public class FormActivity extends AppCompatActivity {
     //==============================================================================================
     // All the form creation functions are here
 
+    @SuppressLint("CutPasteId")
     public void createProductForm() {
 
         //==========================================================================================
@@ -315,7 +317,7 @@ public class FormActivity extends AppCompatActivity {
                         !descET.getText().toString().equals("") && !idET.getText().toString().equals("") &&
                         !condition.equals("") && supplier!=null) {
 
-                    if (names.contains(nameET.getText().toString())) {
+                    if (!names.contains(nameET.getText().toString())) {
 
                         Product product = new Product();
 
@@ -373,6 +375,7 @@ public class FormActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("CutPasteId")
     public void createSupplierOrCustomerForm(String s){
 
         //==========================================================================================
@@ -438,7 +441,7 @@ public class FormActivity extends AppCompatActivity {
                         !mobileno.getText().toString().equals("") && !email.getText().toString().equals("") &&
                         !company.getText().toString().equals("")) {
 
-                    if(names.contains(name.getText().toString())) {
+                    if(!names.contains(name.getText().toString())) {
 
                         if (selection == 1) {
 

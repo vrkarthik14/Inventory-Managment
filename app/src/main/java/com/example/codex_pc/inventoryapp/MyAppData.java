@@ -9,6 +9,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -51,7 +52,13 @@ public class MyAppData extends Application{
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-
+                Product product = dataSnapshot.getValue(Product.class);
+                ArrayList<String> names = new ArrayList<>();
+                for (Product p : products){
+                    names.add(p.getName());
+                }
+                assert product != null;
+                products.set(names.indexOf(product.getName()), product);
             }
 
             @Override
@@ -157,6 +164,61 @@ public class MyAppData extends Application{
         });
 
     }
+
+    //==============================================================================================
+
+    public void updateProductQuantity(final String productName , final int quantity, final Boolean isAddition) {
+
+        final String[] parentNode = new String[1];
+        final int[] prevVal = new int[1];
+
+        parentNode[0] = "c";
+        prevVal[0] = 0;
+
+        product_databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    if (Objects.requireNonNull(snapshot.child("name").getValue(String.class)).equals(productName)) {
+                        parentNode[0] = snapshot.getKey();
+                        Log.d("FirebaseHandler", parentNode[0]);
+                        try {
+                            prevVal[0] = snapshot.child("quantity").getValue(Integer.class);
+                            updateQuantity(parentNode[0],prevVal[0],isAddition,quantity);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("ErrorHandler", "Error Updating Quantity : " + databaseError.toString());
+            }
+        });
+
+    }
+
+    public void updateQuantity(String parentNode, int prevVal, Boolean isAddition, int quantity) {
+
+        Log.d("FirebaseHandler", parentNode + " - " +String.valueOf(prevVal));
+
+        if (!parentNode.equals("c") && prevVal!=0) {
+
+            int finalVal = prevVal;
+            if(isAddition) {
+                finalVal += quantity;
+            } else {
+                finalVal -= quantity;
+            }
+
+            product_databaseReference.child(parentNode).child("quantity").setValue(finalVal);
+        }
+
+    }
+
+    //==============================================================================================
 
     public void pushProduct(Product product){
         product_databaseReference.push().setValue(product);

@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class CustomerActivity extends AppCompatActivity {
 
-    static ArrayList<Customer> customers;
-    static CustomerAdapter customerAdapter;
+     ArrayList<Customer> customers;
+     CustomerAdapter customerAdapter;
 
     @Override
     protected void onStart() {

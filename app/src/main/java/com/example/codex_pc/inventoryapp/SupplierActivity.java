@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class SupplierActivity extends AppCompatActivity {
 
-    static ArrayList<Supplier> suppliers;
-    static SupplierAdapter supplierAdapter;
+    ArrayList<Supplier> suppliers;
+    SupplierAdapter supplierAdapter;
 
     @Override
     protected void onStart() {

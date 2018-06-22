@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class TransactionActivity extends AppCompatActivity {
 
-    static ArrayList<Transaction> transactions;
-    static SwipeRefreshLayout refreshLayout1;
-    static TransactionAdapter transactionAdapter;
+    ArrayList<Transaction> transactions;
+    SwipeRefreshLayout refreshLayout1;
+    TransactionAdapter transactionAdapter;
 
     @Override
     protected void onStart() {

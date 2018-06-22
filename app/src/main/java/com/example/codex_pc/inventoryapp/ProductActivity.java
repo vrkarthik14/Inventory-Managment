@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class ProductActivity extends AppCompatActivity {
 
-    static ArrayList<Product> products;
+    ArrayList<Product> products;
     ProductAdapter productAdapter;
 
     @Override

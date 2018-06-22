@@ -33,7 +33,6 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="iconShape" value="NONE" />
                                       <entry key="outputName" value="upload_image_icon" />
                                     </map>
                                   </option>

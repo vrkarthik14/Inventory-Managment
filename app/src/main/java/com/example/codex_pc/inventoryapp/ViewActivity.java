@@ -66,7 +66,7 @@ public class ViewActivity extends AppCompatActivity {
         viewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (selection == 0 && i == 9) {
+                if (selection == 0 && i == 8) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(ViewActivity.this);
                     alert.setTitle("Supplier Information");
                     alert.setMessage("Name : " + product.getSupplier().getName() +
@@ -102,12 +102,12 @@ public class ViewActivity extends AppCompatActivity {
                     alert.show();
                 }
 
-                if(selection==0 && i==10){
+                if(selection==0 && i==9){
                     product.setQuantity(product.getQuantity()+1);
                     Toast.makeText(getApplicationContext(),"Added/Purchased good",Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                 }
-                if(selection==0 && i==11){
+                if(selection==0 && i==10){
                     product.setQuantity(product.getQuantity()-1);
                     Toast.makeText(getApplicationContext(),"removed/issued good",Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
@@ -132,8 +132,6 @@ public class ViewActivity extends AppCompatActivity {
 
         DynElement element4 = new DynElement("t");
         element4.setTitle(product.getDesc() + "\n\nProduct ID : " + product.getID());
-
-        DynElement dash = new DynElement("L");
 
         DynElement element5 = new DynElement("T");
         element5.setTitle("Price : " + product.getPrice());
@@ -175,13 +173,12 @@ public class ViewActivity extends AppCompatActivity {
         items.add(element2);
         items.add(element3);
         items.add(element4);
-        items.add(dash);
-        items.add(element5);//6
-        items.add(element6);//7
-        items.add(element7);//8
-        items.add(element8);//9
-        items.add(element9);//10
-        items.add(element10);//11
+        items.add(element5);
+        items.add(element6);
+        items.add(element7);
+        items.add(element8);
+        items.add(element9);
+        items.add(element10);
 
         return items;
 

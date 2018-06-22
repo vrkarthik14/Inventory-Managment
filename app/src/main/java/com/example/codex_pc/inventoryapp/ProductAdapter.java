@@ -1,10 +1,7 @@
 package com.example.codex_pc.inventoryapp;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
+import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProductAdapter extends ArrayAdapter<Product> {
@@ -45,14 +38,14 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         }
 
         //Get Current CustomClass Object
-        final Product currentItem = getItem(position);
+        Product currentItem = getItem(position);
 
         //Declare and assign all XML view elements from list_entry : Example
         TextView productName = listItemView.findViewById(R.id.productName);
         TextView productDesc = listItemView.findViewById(R.id.productDescription);
         TextView productQuantity = listItemView.findViewById(R.id.productQuantity);
         TextView productID = listItemView.findViewById(R.id.productID);
-        final ImageView productIcon = listItemView.findViewById(R.id.productIcon);
+        ImageView productIcon = listItemView.findViewById(R.id.productIcon);
 
         if (currentItem!=null) {
             productName.setText(currentItem.getName());
@@ -62,40 +55,15 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             String quantity = String.valueOf(currentItem.getQuantity());
             productQuantity.setText(quantity);
 
-            final SharedPreferences sharedPref = context.getSharedPreferences(
-                    "images-drive", Context.MODE_PRIVATE);
-            String imagePath = sharedPref.getString(currentItem.getName(), "");
-
-            if(!imagePath.equals("")) {
-                Uri imageUri = Uri.parse(imagePath);
-                productIcon.setImageURI(imageUri);
-
-                Log.d("ImageHandler","Local Storage");
-            } else if(currentItem.getImagePath()!=null) {
+            if(currentItem.getImagePath()!=null) {
                 // Reference to an image file in Cloud Storage
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(currentItem.getImagePath());
 
-                try {
-                    final File localFile = File.createTempFile("inventory", "jpg");
-                    storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Uri imageUri = Uri.fromFile(localFile);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString(currentItem.getName(), imageUri.toString());
-                            editor.apply();
-                            productIcon.setImageURI(imageUri);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("ErrorHandler","Error getting file from firebase storage");
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("ImageHandler","FirebaseStorage");
+                // Download directly from StorageReference using Glide
+                // (See MyAppGlideModule for Loader registration)
+                Glide.with(context)
+                        .load(storageReference)
+                        .into(productIcon);
             }
         }
 

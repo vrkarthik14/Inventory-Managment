@@ -3,23 +3,26 @@ package com.example.codex_pc.inventoryapp;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -35,67 +38,46 @@ import java.util.UUID;
 
 public class FormActivity extends AppCompatActivity {
 
-    ListView mainList;
-    ArrayList<DynElement> elements;
-    DynamicListAdapter adapter;
+    //Constants
+    private final static int RESULT_LOAD_IMG = 123;
 
+    //Context
+    Context context = FormActivity.this;
+
+    //Layouts
+    TableLayout layout;
+    LayoutInflater inflater;
+
+    //Views
+    Button  submitButton;                                                 // Common
+    ImageView image;                                                      // Product
+    TextInputLayout titleBox,descBox,priceBox,quantityBox,idBox;          //
+    EditText nameET ,descET, priceET, quantityET, idET;                   //
+    Button conditionButton, supplierButton;                               //
+    TextInputLayout nameBox,addressBox,emailBox, mobilenoBox, companyBox; // Supplier [or] Customer
+    EditText name, address, email, mobileno, company;                     //
+
+    //Results
+    String imagePath = "";    //Product
+    String condition = "";    //Supplier [or] Customer
+    Supplier supplier = null; //
+
+    //Controllers
     int selection;
-    private final static int RESULT_LOAD_IMG = 1;
-    String imageUri;
-
-    Supplier supplier;
+    Uri selectedImage;
+    MaterialDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-        mainList = findViewById(R.id.mainList);
+        layout = findViewById(R.id.dynamicLayout);
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         selection = ((MyAppData)this.getApplication()).getSelection();
 
-        elements = new ArrayList<>();
-
-        if (selection==0) {elements = createProductForm();}
-        else if(selection==1) { elements = createSupplierOrCustomerForm("Supplier"); }
-        else if (selection==2) { elements = createSupplierOrCustomerForm("Customer"); }
-
-        adapter = new DynamicListAdapter(this, elements);
-        mainList.setItemsCanFocus(true);
-        mainList.setAdapter(adapter);
-
-        scrollMyListViewToBottom();
-
-        mainList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(selection==0 && i==0) {
-                    // Create intent to Open Image applications like Gallery, Google Photos
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    // Start the Intent
-                    startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-                }
-                if(selection==0 && i==10){
-
-                    final String[] items = {"No Issues","Under Repair","Damaged"};
-
-                    AlertDialog.Builder alert = new AlertDialog.Builder(FormActivity.this);
-                    alert.setTitle("Choose Condition");
-                    alert.setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            // Do something with the selection
-                            elements.get(10).setResult1(items[item]);
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.show();
-                }
-                if(selection==0 && i==elements.size()-1){
-                    launchChooserDialog();
-                }
-            }
-        });
+        setLayoutBasedOnSelection();
 
     }
 
@@ -105,218 +87,357 @@ public class FormActivity extends AppCompatActivity {
         if(requestCode==RESULT_LOAD_IMG){
             if(resultCode == RESULT_OK){
                 Uri selectedImage = data.getData();
-                elements.get(0).setImageURI(selectedImage);
-                adapter.notifyDataSetChanged();
-                assert selectedImage != null;
-                imageUri = selectedImage.toString();
+                assert selectedImage!=null;
+                image.setImageURI(selectedImage);
 
-                final String path = "inventory/" + UUID.randomUUID() + ".jpg";
-                StorageReference ref = FirebaseStorage.getInstance().getReference().child(path);
-                ref.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        elements.get(0).setResult1(path);
-                        Toast.makeText(getApplicationContext(),"Image Uploaded",Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("ErrorHandler","Error uploading image");
+                imagePath = "inventory/" + UUID.randomUUID() + ".jpg";
+                this.selectedImage = selectedImage;
+
+            }
+        }
+
+    }
+
+    //==============================================================================================
+    //==============================================================================================
+    // Upload Image Function
+
+    public void uploadImageAndCloseActivity(final Product product,final Transaction transaction) {
+
+        launchProgressDialog();
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference().child(imagePath);
+
+        ref.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                ((MyAppData) FormActivity.this.getApplication()).pushProduct(product);
+                ((MyAppData)FormActivity.this.getApplication()).pushTransaction(transaction);
+                dismissDialog();
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                dismissDialog();
+                Log.d("ErrorHandler","Error uploading image");
+                Toast.makeText(getApplicationContext(),"Error Uploading Image",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+    }
+
+    //==============================================================================================
+    //==============================================================================================
+    // Switch Cases
+
+    public void setLayoutBasedOnSelection() {
+
+        switch (selection) {
+            case 0: createProductForm();
+                break;
+
+            case 1: createSupplierOrCustomerForm("Supplier");
+                break;
+
+            case 2: createSupplierOrCustomerForm("Customer");
+                break;
+
+            default:
+                Log.d("ErrorHandler","Error choosing form");
+        }
+
+    }
+
+    //==============================================================================================
+    //==============================================================================================
+    // All the form creation functions are here
+
+    public void createProductForm() {
+
+        //==========================================================================================
+        //Declaration and creation of views to be populated
+
+        ArrayList<View> elements = new ArrayList<>();
+        int i=0;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_imageupload_item, layout, false));
+        image = elements.get(i).findViewById(R.id.dynamic_imageupload_item);
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_title_item, layout, false));
+        TextView tv = elements.get(i).findViewById(R.id.dynamic_title_item);
+        tv.setText("Enter new Product Details");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_line_item, layout, false));
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        titleBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        nameET = elements.get(i).findViewById(R.id.et);
+        titleBox.setHint("Name");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        descBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        descET = elements.get(i).findViewById(R.id.et);
+        descET.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        descBox.setHint("Description");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_dualedittexts_item, layout, false));
+        priceBox = elements.get(i).findViewById(R.id.dynamic_edittext_item_1);
+        priceET = elements.get(i).findViewById(R.id.et1);
+        priceET.setInputType(InputType.TYPE_CLASS_NUMBER);
+        priceBox.setHint("Price");
+        quantityBox = elements.get(i).findViewById(R.id.dynamic_edittext_item_2);
+        quantityET = elements.get(i).findViewById(R.id.et2);
+        quantityET.setInputType(InputType.TYPE_CLASS_NUMBER);
+        quantityBox.setHint("Quantity");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        idBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        idET = elements.get(i).findViewById(R.id.et);
+        idET.setInputType(InputType.TYPE_CLASS_NUMBER);
+        idBox.setHint("Product ID");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_subtext_item, layout, false));
+        TextView tv1 = elements.get(i).findViewById(R.id.dynamic_subtext_item);
+        tv1.setText("Note.long press here to open the barcode scanner");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_button_item, layout, false));
+        conditionButton = elements.get(i).findViewById(R.id.dynamic_button_item);
+        conditionButton.setText("Choose Item Condition");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_button_item, layout, false));
+        supplierButton = elements.get(i).findViewById(R.id.dynamic_button_item);
+        supplierButton.setText("Enter Supplier Details");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_button_item, layout, false));
+        submitButton = elements.get(i).findViewById(R.id.dynamic_button_item);
+        submitButton.setText("Submit");
+
+        //==========================================================================================
+        //Add listeners for any of the items here
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("image/*");
+
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("image/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+                startActivityForResult(chooserIntent, RESULT_LOAD_IMG);
+            }
+        });
+
+        conditionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String[] items = {"No Issues","Under Repair","Damaged"};
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Choose Condition");
+                alert.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        // Do something with the selection
+                        condition = items[item];
+                        dialog.dismiss();
                     }
                 });
+                alert.show();
             }
-        }
+        });
 
-    }
+        supplierButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchChooserDialog();
+            }
+        });
 
-    public ArrayList<DynElement> createProductForm() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!imagePath.equals("") && !nameET.getText().toString().equals("") &&
+                        !priceET.getText().toString().equals("") && !quantityET.getText().toString().equals("") &&
+                        !descET.getText().toString().equals("") && !idET.getText().toString().equals("") &&
+                        !condition.equals("") && supplier!=null) {
 
-        Log.d("ListHandler","Fired");
+                    Product product = new Product();
 
-        ArrayList<DynElement> items = new ArrayList<>();
+                    product.setName(nameET.getText().toString());
+                    product.setPrice(Integer.parseInt(priceET.getText().toString()));
+                    product.setQuantity(Integer.parseInt(quantityET.getText().toString()));
+                    product.setDesc(descET.getText().toString());
+                    product.setID(idET.getText().toString());
+                    product.setCondition(condition);
+                    product.setSupplier(supplier);
+                    product.setImagePath(imagePath);
 
-        DynElement element0 = new DynElement("I");
+                    Transaction transaction = new Transaction();
+                    transaction.setProductName(product.getName());
+                    transaction.setProductID(product.getID());
+                    transaction.setDate(getCurrentDate());
+                    transaction.setTime(getCurrentTime());
+                    transaction.setIsSupply(1);
+                    transaction.setSupplier(supplier);
+                    transaction.setQuantity(product.getQuantity());
+                    transaction.setPrice(product.getPrice());
 
-        DynElement element1 = new DynElement("G");
+                    uploadImageAndCloseActivity(product, transaction);
 
-        DynElement element2 = new DynElement("T");
-        element2.setTitle("Please enter Product Information");
-
-        DynElement element3 = new DynElement("L");
-
-        DynElement element4 = new DynElement("E");
-        element4.setTitle("Product Name");
-        element4.setInputTypeing(InputType.TYPE_CLASS_TEXT);
-
-        DynElement element5 = new DynElement("E");
-        element5.setTitle("Product Price");
-        element5.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
-
-        DynElement element6 = new DynElement("E");
-        element6.setTitle("Product Quantity");
-        element6.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
-
-        DynElement element7 = new DynElement("E");
-        element7.setTitle("Product Description");
-        element7.setInputTypeing(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-
-        DynElement element8 = new DynElement("E");
-        element8.setTitle("Product ID");
-        element8.setInputTypeing(InputType.TYPE_CLASS_NUMBER);
-
-        DynElement element9 = new DynElement("t");
-        element9.setTitle("Note. long press here to open the barcode scanner");
-
-        DynElement element10 = new DynElement("S");
-        element10.setTitle("Choose Item Condition");
-
-        DynElement element11 = new DynElement("S");
-        element11.setTitle("Enter Supplier Details");
-
-        items.add(element0);
-        items.add(element1);
-        items.add(element2);
-        items.add(element3);
-        items.add(element4);
-        items.add(element5);
-        items.add(element6);
-        items.add(element7);
-        items.add(element8);
-        items.add(element9);
-        items.add(element10);
-        items.add(element11);
-
-        return items;
-    }
-
-    public ArrayList<DynElement> createSupplierOrCustomerForm(String s) {
-        ArrayList<DynElement> items = new ArrayList<>();
-
-        DynElement element0 = new DynElement("G");
-        element0.setGapSize(8);
-
-        DynElement dash = new DynElement("L");
-
-        DynElement element = new DynElement("T");
-        element.setTitle("Enter " + s +" Information");
-
-        DynElement element1 = new DynElement("E");
-        element1.setTitle("Name");
-        element1.setInputTypeing(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
-        DynElement element2 = new DynElement("E");
-        element2.setTitle("Address");
-        element2.setInputTypeing(InputType.TYPE_CLASS_TEXT);
-
-        DynElement element3 = new DynElement("E");
-        element3.setTitle("Email");
-        element3.setInputTypeing(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-
-        DynElement element4 = new DynElement("E");
-        element4.setTitle("Mobile No");
-        element4.setInputTypeing(InputType.TYPE_CLASS_PHONE);
-
-        DynElement element5 = new DynElement("E");
-        element5.setTitle(s + " Company");
-        element5.setInputTypeing(InputType.TYPE_CLASS_TEXT);
-
-        items.add(element0);
-        items.add(element);
-        items.add(dash);
-        items.add(element1);
-        items.add(element2);
-        items.add(element3);
-        items.add(element4);
-        items.add(element5);
-
-        return items;
-
-    }
-
-    public void Submit(View view) {
-
-        Boolean valid = true;
-
-        for (int i=0;i<elements.size();i++) {
-            if(!elements.get(i).getType().equals("G") && !elements.get(i).getType().equals("L")
-                    && !elements.get(i).getType().equals("T") && !elements.get(i).getType().equals("t")){
-                if(elements.get(i).getResult1().equals("")){
-                    valid = false;
-                    Log.d("ErrorHandler","It becomes false in " + String.valueOf(i));
+                } else {
+                    Toast.makeText(getApplicationContext(),"Please fill out all the inputs",Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        //==========================================================================================
+        //Adding of views to the layout
+
+        /* layout.addView(element0);
+        layout.addView(element0_5);
+        layout.addView(dash);
+        layout.addView(element1);
+        layout.addView(element2);
+        layout.addView(element3);
+        layout.addView(element4);
+        layout.addView(element5);
+        layout.addView(element6);
+        layout.addView(element7);
+        layout.addView(element8); */
+
+        for (View v : elements){
+            layout.addView(v);
         }
 
-        if(selection==0 &&supplier==null){
-            valid = false;
-        }
-
-         if(selection==0 && valid){
-
-            Product product = new Product();
-
-            product.setName(elements.get(4).getResult1());
-            product.setPrice(Integer.parseInt(elements.get(5).getResult1()));
-            product.setQuantity(Integer.parseInt(elements.get(6).getResult1()));
-            product.setDesc(elements.get(7).getResult1());
-            product.setID(elements.get(8).getResult1());
-            product.setCondition(elements.get(10).getResult1());
-            product.setSupplier(supplier);
-            product.setImagePath(elements.get(0).getResult1());
-            ((MyAppData) this.getApplication()).pushProduct(product);
-
-             Transaction transaction = new Transaction();
-             transaction.setProductName(product.getName());
-             transaction.setProductID(product.getID());
-             transaction.setDate(getCurrentDate());
-             transaction.setTime(getCurrentTime());
-             transaction.setIsSupply(1);
-             transaction.setSupplier(supplier);
-             transaction.setQuantity(product.getQuantity());
-             transaction.setPrice(product.getPrice());
-             ((MyAppData)this.getApplication()).pushTransaction(transaction);
-
-             finish();
-
-             SharedPreferences sharedPref = FormActivity.this.getSharedPreferences(
-                     "images-drive", Context.MODE_PRIVATE);
-             SharedPreferences.Editor editor = sharedPref.edit();
-             editor.putString(product.getName(), imageUri);
-             editor.apply();
-
-//             ImageHandler handler = new ImageHandler(FormActivity.this);
-//             handler.addImagePath(new LocalImg(product.getName(),imageUri));
-
-         } else if(selection==1 && valid) {
-
-            Supplier supplier = new Supplier();
-            supplier.setName(elements.get(3).getResult1());
-            supplier.setAddress(elements.get(4).getResult1());
-            supplier.setEmail(elements.get(5).getResult1());
-            supplier.setMobileNo(elements.get(6).getResult1());
-            supplier.setCompany(elements.get(7).getResult1());
-            ((MyAppData)this.getApplication()).pushSupllier(supplier);
-
-            finish();
-
-         } else if(selection==2 && valid) {
-
-             Customer customer = new Customer();
-             customer.setName(elements.get(3).getResult1());
-             customer.setAddress(elements.get(4).getResult1());
-             customer.setEmail(elements.get(5).getResult1());
-             customer.setMobileNo(elements.get(6).getResult1());
-             customer.setCompany(elements.get(7).getResult1());
-             ((MyAppData)this.getApplication()).pushCustomer(customer);
-
-             finish();
-
-         } else {
-
-            Toast.makeText(getApplicationContext(),"Please Fill All forms",Toast.LENGTH_SHORT).show();
-
-        }
     }
+
+    public void createSupplierOrCustomerForm(String s){
+
+        //==========================================================================================
+        //Declaration and creation of view to be populated
+
+        ArrayList<View> elements = new ArrayList<>();
+        int i = 0;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_title_item,layout,false));
+        TextView tv1 = elements.get(i).findViewById(R.id.dynamic_title_item);
+        tv1.setText("Enter " + s + " Details");
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_line_item,layout,false));
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        nameBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        name = elements.get(i).findViewById(R.id.et);
+        nameBox.setHint("Name");
+        name.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        addressBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        address = elements.get(i).findViewById(R.id.et);
+        addressBox.setHint("Address");
+        address.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        emailBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        email = elements.get(i).findViewById(R.id.et);
+        emailBox.setHint("Email");
+        email.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        mobilenoBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        mobileno = elements.get(i).findViewById(R.id.et);
+        mobilenoBox.setHint("Mobile Number");
+        mobileno.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_edittext_item, layout, false));
+        companyBox = elements.get(i).findViewById(R.id.dynamic_edittext_item);
+        company = elements.get(i).findViewById(R.id.et);
+        companyBox.setHint("Supplier Company");
+        company.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        i++;
+
+        elements.add(inflater.inflate(R.layout.dynamicform_button_item, layout, false));
+        submitButton = elements.get(i).findViewById(R.id.dynamic_button_item);
+        submitButton.setText("Submit");
+
+        //==========================================================================================
+        //Add listeners for any of the items here
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!name.getText().toString().equals("") && !address.getText().toString().equals("") &&
+                        !mobileno.getText().toString().equals("") && !email.getText().toString().equals("") &&
+                        !company.getText().toString().equals("")) {
+
+                    if (selection==1) {
+
+                        Supplier supplier = new Supplier();
+                        supplier.setName(name.getText().toString());
+                        supplier.setAddress(address.getText().toString());
+                        supplier.setEmail(email.getText().toString());
+                        supplier.setMobileNo(mobileno.getText().toString());
+                        supplier.setCompany(company.getText().toString());
+                        ((MyAppData)FormActivity.this.getApplication()).pushSupllier(supplier);
+
+                    } else {
+
+                        Customer customer = new Customer();
+                        customer.setName(name.getText().toString());
+                        customer.setAddress(address.getText().toString());
+                        customer.setEmail(email.getText().toString());
+                        customer.setMobileNo(mobileno.getText().toString());
+                        customer.setCompany(company.getText().toString());
+                        ((MyAppData) FormActivity.this.getApplication()).pushCustomer(customer);
+
+                    }
+
+                    finish();
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(),"Please fill out all the inputs",Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+        //==========================================================================================
+        //Adding of views to the layout
+
+        for (View v : elements){
+            layout.addView(v);
+        }
+
+    }
+
+    //==============================================================================================
+    //==============================================================================================
+    // Helper Functions
 
     public String getCurrentDate() {
 
@@ -334,22 +455,12 @@ public class FormActivity extends AppCompatActivity {
 
     }
 
-    private void scrollMyListViewToBottom() {
-        mainList.post(new Runnable() {
-            @Override
-            public void run() {
-                // Select the last row so it will scroll into view...
-                mainList.setSelection(adapter.getCount() - 1);
-            }
-        });
-    }
-
     private void launchChooserDialog() {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(FormActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setTitle("Choose Supplier");
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(FormActivity.this, android.R.layout.select_dialog_singlechoice);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.select_dialog_singlechoice);
         final ArrayList<Supplier> suppliers = ((MyAppData)FormActivity.this.getApplication()).getSuppliers();
         for (int i=0;i<suppliers.size();i++){
             arrayAdapter.add(suppliers.get(i).getName());
@@ -372,7 +483,6 @@ public class FormActivity extends AppCompatActivity {
                     launchSupplierDialog();
                 } else {
                     supplier = suppliers.get(which);
-                    elements.get(11).setResult1(supplier.getName());
                 }
             }
         });
@@ -382,30 +492,30 @@ public class FormActivity extends AppCompatActivity {
 
     private void launchSupplierDialog() {
 
-        LinearLayout layout = new LinearLayout(FormActivity.this);
+        LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText nameBox = new EditText(FormActivity.this);
+        final EditText nameBox = new EditText(context);
         nameBox.setHint("Name");
         layout.addView(nameBox);
 
-        final EditText addressBox = new EditText(FormActivity.this);
+        final EditText addressBox = new EditText(context);
         addressBox.setHint("Address");
         layout.addView(addressBox);
 
-        final EditText emailBox = new EditText(FormActivity.this);
+        final EditText emailBox = new EditText(context);
         emailBox.setHint("Email");
         layout.addView(emailBox);
 
-        final EditText MobileNoBox = new EditText(FormActivity.this);
+        final EditText MobileNoBox = new EditText(context);
         MobileNoBox.setHint("Mobile Number");
         layout.addView(MobileNoBox);
 
-        final EditText CompanyBox = new EditText(FormActivity.this);
+        final EditText CompanyBox = new EditText(context);
         CompanyBox.setHint("Company");
         layout.addView(CompanyBox);
 
-        final AlertDialog alert = new AlertDialog.Builder(FormActivity.this)
+        final AlertDialog alert = new AlertDialog.Builder(context)
                 .setTitle("Enter Supplier Details")
                 .setView(layout)
                 .setPositiveButton("Create",null)
@@ -415,8 +525,8 @@ public class FormActivity extends AppCompatActivity {
         alert.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                Button button = ((AlertDialog) alert).getButton(AlertDialog.BUTTON_POSITIVE);
-                Button button1 = ((AlertDialog) alert).getButton(AlertDialog.BUTTON_NEGATIVE);
+                Button button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button button1 = alert.getButton(AlertDialog.BUTTON_NEGATIVE);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -432,8 +542,6 @@ public class FormActivity extends AppCompatActivity {
                             supplier.setCompany(CompanyBox.getText().toString());
                             supplier.setEmail(emailBox.getText().toString());
                             supplier.setMobileNo(MobileNoBox.getText().toString());
-                            elements.get(11).setResult1(supplier.getName());
-
                             alert.dismiss();
                         }
                     }
@@ -448,6 +556,24 @@ public class FormActivity extends AppCompatActivity {
         });
 
         alert.show();
+
+    }
+
+    public void launchProgressDialog() {
+
+        dialog = new MaterialDialog.Builder(this)
+                .title("Progress")
+                .content("Submitting,Please wait...")
+                .progress(true, 0)
+                .show();
+
+    }
+
+    public void dismissDialog() {
+
+        if(dialog!=null){
+            dialog.dismiss();
+        }
 
     }
 

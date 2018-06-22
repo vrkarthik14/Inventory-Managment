@@ -1,5 +1,6 @@
 package com.example.codex_pc.inventoryapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,13 @@ public class TransactionActivity extends AppCompatActivity {
         transactionAdapter= new TransactionAdapter(this,transactions);
         ListView product_list_view = findViewById(R.id.transactiona_list);
         product_list_view.setAdapter(transactionAdapter);
+        product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((MyAppData)getApplication()).setTransaction(transactions.get(i));
+                startActivity(new Intent(TransactionActivity.this,ViewActivity.class));
+            }
+        });
 
         refreshLayout1.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -57,14 +65,6 @@ public class TransactionActivity extends AppCompatActivity {
             }
         });
 
-        product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                assert transactions.get(i)!=null;
-                ((MyAppData)TransactionActivity.this.getApplication()).setTransaction(transactions.get(i));
-                // TODO: Add StartActivity call here
-            }
-        });
 
         refreshTransactionTotal();
 

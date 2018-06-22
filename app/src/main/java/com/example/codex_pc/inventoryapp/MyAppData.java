@@ -27,6 +27,7 @@ public class MyAppData extends Application{
     Transaction transaction;
 
     int selection = 0;
+    String scannedID = "false/";
 
     @Override
     public void onCreate() {
@@ -216,6 +217,14 @@ public class MyAppData extends Application{
 
     public void setSelection(int selection) {
         this.selection = selection;
+    }
+
+    public String getScannedID() {
+        return scannedID;
+    }
+
+    public void setScannedID(String scannedID) {
+        this.scannedID = scannedID;
     }
 
     //==============================================================================================

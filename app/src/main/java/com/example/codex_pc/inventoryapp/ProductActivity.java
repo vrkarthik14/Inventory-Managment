@@ -7,14 +7,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ProductActivity extends AppCompatActivity {
 
-    static ArrayList<Product> products;
+    ArrayList<Product> products;
     ProductAdapter productAdapter;
+    TextView productTotal;
 
     @Override
     protected void onStart() {
@@ -23,6 +27,7 @@ public class ProductActivity extends AppCompatActivity {
         if (products!=null && productAdapter!=null) {
             products = ((MyAppData)ProductActivity.this.getApplication()).getProducts();
             productAdapter.notifyDataSetChanged();
+            refreshProductCount();
         }
 
     }
@@ -32,11 +37,14 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
 
+        Toast.makeText(getApplicationContext(), "Swipe to refresh and load data", Toast.LENGTH_SHORT).show();
+
         Log.d("ActivityHandler","OnCreate");
 
         final SwipeRefreshLayout refreshLayout = findViewById(R.id.swiperefresh);
+        productTotal = findViewById(R.id.product_count_total);
 
-         products = ((MyAppData)this.getApplication()).getProducts();
+        products = ((MyAppData)this.getApplication()).getProducts();
 
         //Log.i("Check",products.get(0).getName());
         productAdapter = new ProductAdapter(this,products);
@@ -55,12 +63,35 @@ public class ProductActivity extends AppCompatActivity {
             public void onRefresh() {
                 products = ((MyAppData)getApplication()).getProducts();
                 productAdapter.notifyDataSetChanged();
+                refreshProductCount();
                 refreshLayout.setRefreshing(false);
             }
         });
 
+        product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                assert products.get(i)!=null;
+                ((MyAppData)ProductActivity.this.getApplication()).setProduct(products.get(i));
+                //TODO: Add startActivity call here
+            }
+        });
+
+        refreshProductCount();
+
     }
 
+    public void refreshProductCount() {
 
+        if(products!=null && productTotal!=null){
+            int q = 0;
+            for (Product p : products){
+                q += p.getQuantity();
+            }
+            String quantity = "Product Total : " + String.valueOf(q);
+            productTotal.setText(quantity);
+        }
+
+    }
 
 }

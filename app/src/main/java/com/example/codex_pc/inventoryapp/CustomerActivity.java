@@ -6,14 +6,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class CustomerActivity extends AppCompatActivity {
 
-    static ArrayList<Customer> customers;
-    static CustomerAdapter customerAdapter;
+    ArrayList<Customer> customers;
+    CustomerAdapter customerAdapter;
+    TextView customerTotal;
 
     @Override
     protected void onStart() {
@@ -22,6 +26,7 @@ public class CustomerActivity extends AppCompatActivity {
         if (customers!=null && customerAdapter!=null) {
             customers = ((MyAppData)CustomerActivity.this.getApplication()).getCustomers();
             customerAdapter.notifyDataSetChanged();
+            refreshCustomerCount();
         }
 
     }
@@ -31,7 +36,10 @@ public class CustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer);
 
+        Toast.makeText(getApplicationContext(), "Swipe to refresh and load data", Toast.LENGTH_SHORT).show();
+
         final SwipeRefreshLayout refreshLayout3 = findViewById(R.id.swiperefresh1);
+        customerTotal = findViewById(R.id.customer_count_total);
 
         customers = ((MyAppData)this.getApplication()).getCustomers();
 
@@ -53,8 +61,28 @@ public class CustomerActivity extends AppCompatActivity {
             public void onRefresh() {
                 customers= ((MyAppData)getApplication()).getCustomers();
                 customerAdapter.notifyDataSetChanged();
+                refreshCustomerCount();
                 refreshLayout3.setRefreshing(false);
             }
         });
+
+        product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                assert customers.get(i)!=null;
+                ((MyAppData)CustomerActivity.this.getApplication()).setCustomer(customers.get(i));
+                // TODO: Add StartActivity call here
+            }
+        });
+
+        refreshCustomerCount();
+
+    }
+
+    public void refreshCustomerCount() {
+        if(customers!=null && customerTotal!=null){
+            String quantity = "Total Customers : " + String.valueOf(customers.size());
+            customerTotal.setText(quantity);
+        }
     }
 }

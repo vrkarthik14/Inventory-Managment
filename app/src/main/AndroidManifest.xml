@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".MyAppData"
@@ -35,7 +36,7 @@
         <activity android:name=".SupplierActivity" />
         <activity android:name=".CustomerActivity" />
         <activity android:name=".TransactionActivity" />
-        <activity android:name=".ViewActivity" android:screenOrientation="portrait" />
+        <activity android:name=".SimpleScannerActivity" />
     </application>
 
 </manifest>

@@ -6,22 +6,20 @@
     android:layout_height="match_parent"
     tools:context="com.example.codex_pc.inventoryapp.CustomerActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swiperefresh1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <ListView
-        android:id="@+id/customer_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        android:divider="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/customer_count_total"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ListView
+            android:id="@+id/customer_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -29,13 +27,26 @@
         android:id="@+id/add_customers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/customer_count_total"
+        app:srcCompat="@mipmap/ic_plus"
+        tools:layout_editor_absoluteY="447dp" />
+
+    <TextView
+        android:id="@+id/customer_count_total"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_bg_ripple_unrounded"
+        android:gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:text="Total Customers : 0"
+        android:textColor="@android:color/background_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_plus" />
-
-
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

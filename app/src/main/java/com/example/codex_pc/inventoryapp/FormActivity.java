@@ -66,6 +66,22 @@ public class FormActivity extends AppCompatActivity {
     int selection;
     Uri selectedImage;
     MaterialDialog dialog;
+    ArrayList<String> names;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (idET != null) {
+
+            String[] scannedRes = ((MyAppData)FormActivity.this.getApplication()).getScannedID().split("/");
+
+            if(scannedRes[0].equals("true")) {
+                idET.setText(scannedRes[1]);
+            }
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +90,7 @@ public class FormActivity extends AppCompatActivity {
 
         layout = findViewById(R.id.dynamicLayout);
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        names = new ArrayList<>();
 
         selection = ((MyAppData)this.getApplication()).getSelection();
 
@@ -138,12 +155,24 @@ public class FormActivity extends AppCompatActivity {
 
         switch (selection) {
             case 0: createProductForm();
+                ArrayList<Product> products = ((MyAppData)FormActivity.this.getApplication()).getProducts();
+                for (Product p : products){
+                    names.add(p.getName());
+                }
                 break;
 
             case 1: createSupplierOrCustomerForm("Supplier");
+                ArrayList<Supplier> suppliers = ((MyAppData)FormActivity.this.getApplication()).getSuppliers();
+                for (Supplier s : suppliers){
+                    names.add(s.getName());
+                }
                 break;
 
             case 2: createSupplierOrCustomerForm("Customer");
+                ArrayList<Customer> customers = ((MyAppData)FormActivity.this.getApplication()).getCustomers();
+                for (Customer c : customers){
+                    names.add(c.getName());
+                }
                 break;
 
             default:
@@ -263,6 +292,14 @@ public class FormActivity extends AppCompatActivity {
             }
         });
 
+        tv1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                startActivity(new Intent(context,SimpleScannerActivity.class));
+                return false;
+            }
+        });
+
         supplierButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -278,28 +315,36 @@ public class FormActivity extends AppCompatActivity {
                         !descET.getText().toString().equals("") && !idET.getText().toString().equals("") &&
                         !condition.equals("") && supplier!=null) {
 
-                    Product product = new Product();
+                    if (names.contains(nameET.getText().toString())) {
 
-                    product.setName(nameET.getText().toString());
-                    product.setPrice(Integer.parseInt(priceET.getText().toString()));
-                    product.setQuantity(Integer.parseInt(quantityET.getText().toString()));
-                    product.setDesc(descET.getText().toString());
-                    product.setID(idET.getText().toString());
-                    product.setCondition(condition);
-                    product.setSupplier(supplier);
-                    product.setImagePath(imagePath);
+                        Product product = new Product();
 
-                    Transaction transaction = new Transaction();
-                    transaction.setProductName(product.getName());
-                    transaction.setProductID(product.getID());
-                    transaction.setDate(getCurrentDate());
-                    transaction.setTime(getCurrentTime());
-                    transaction.setIsSupply(1);
-                    transaction.setSupplier(supplier);
-                    transaction.setQuantity(product.getQuantity());
-                    transaction.setPrice(product.getPrice());
+                        product.setName(nameET.getText().toString());
+                        product.setPrice(Integer.parseInt(priceET.getText().toString()));
+                        product.setQuantity(Integer.parseInt(quantityET.getText().toString()));
+                        product.setDesc(descET.getText().toString());
+                        product.setID(idET.getText().toString());
+                        product.setCondition(condition);
+                        product.setSupplier(supplier);
+                        product.setImagePath(imagePath);
 
-                    uploadImageAndCloseActivity(product, transaction);
+                        Transaction transaction = new Transaction();
+                        transaction.setProductName(product.getName());
+                        transaction.setProductID(product.getID());
+                        transaction.setDate(getCurrentDate());
+                        transaction.setTime(getCurrentTime());
+                        transaction.setIsSupply(1);
+                        transaction.setSupplier(supplier);
+                        transaction.setQuantity(product.getQuantity());
+                        transaction.setPrice(product.getPrice());
+
+                        uploadImageAndCloseActivity(product, transaction);
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "This product name already exists", Toast.LENGTH_SHORT).show();
+
+                    }
 
                 } else {
                     Toast.makeText(getApplicationContext(),"Please fill out all the inputs",Toast.LENGTH_SHORT).show();
@@ -393,29 +438,37 @@ public class FormActivity extends AppCompatActivity {
                         !mobileno.getText().toString().equals("") && !email.getText().toString().equals("") &&
                         !company.getText().toString().equals("")) {
 
-                    if (selection==1) {
+                    if(names.contains(name.getText().toString())) {
 
-                        Supplier supplier = new Supplier();
-                        supplier.setName(name.getText().toString());
-                        supplier.setAddress(address.getText().toString());
-                        supplier.setEmail(email.getText().toString());
-                        supplier.setMobileNo(mobileno.getText().toString());
-                        supplier.setCompany(company.getText().toString());
-                        ((MyAppData)FormActivity.this.getApplication()).pushSupllier(supplier);
+                        if (selection == 1) {
+
+                            Supplier supplier = new Supplier();
+                            supplier.setName(name.getText().toString());
+                            supplier.setAddress(address.getText().toString());
+                            supplier.setEmail(email.getText().toString());
+                            supplier.setMobileNo(mobileno.getText().toString());
+                            supplier.setCompany(company.getText().toString());
+                            ((MyAppData) FormActivity.this.getApplication()).pushSupllier(supplier);
+
+                        } else {
+
+                            Customer customer = new Customer();
+                            customer.setName(name.getText().toString());
+                            customer.setAddress(address.getText().toString());
+                            customer.setEmail(email.getText().toString());
+                            customer.setMobileNo(mobileno.getText().toString());
+                            customer.setCompany(company.getText().toString());
+                            ((MyAppData) FormActivity.this.getApplication()).pushCustomer(customer);
+
+                        }
+
+                        finish();
 
                     } else {
 
-                        Customer customer = new Customer();
-                        customer.setName(name.getText().toString());
-                        customer.setAddress(address.getText().toString());
-                        customer.setEmail(email.getText().toString());
-                        customer.setMobileNo(mobileno.getText().toString());
-                        customer.setCompany(company.getText().toString());
-                        ((MyAppData) FormActivity.this.getApplication()).pushCustomer(customer);
+                        Toast.makeText(getApplicationContext(), "Please choose another name. This is taken", Toast.LENGTH_SHORT).show();
 
                     }
-
-                    finish();
 
                 } else {
 

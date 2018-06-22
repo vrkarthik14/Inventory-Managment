@@ -6,14 +6,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class SupplierActivity extends AppCompatActivity {
 
-    static ArrayList<Supplier> suppliers;
-    static SupplierAdapter supplierAdapter;
+    ArrayList<Supplier> suppliers;
+    SupplierAdapter supplierAdapter;
+    TextView supplierTotal;
 
     @Override
     protected void onStart() {
@@ -22,6 +26,7 @@ public class SupplierActivity extends AppCompatActivity {
         if (suppliers!=null && supplierAdapter!=null) {
             suppliers = ((MyAppData)SupplierActivity.this.getApplication()).getSuppliers();
             supplierAdapter.notifyDataSetChanged();
+            refreshSupplierCount();
         }
 
     }
@@ -31,7 +36,10 @@ public class SupplierActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supplier);
 
+        Toast.makeText(getApplicationContext(), "Swipe to refresh and load data", Toast.LENGTH_SHORT).show();
+
         final SwipeRefreshLayout refreshLayout2 = findViewById(R.id.swiperefresh2);
+        supplierTotal = findViewById(R.id.supplier_count_total);
 
         suppliers = ((MyAppData)this.getApplication()).getSuppliers();
 
@@ -53,14 +61,31 @@ public class SupplierActivity extends AppCompatActivity {
             public void onRefresh() {
                 suppliers= ((MyAppData)getApplication()).getSuppliers();
                 supplierAdapter.notifyDataSetChanged();
+                refreshSupplierCount();
                 refreshLayout2.setRefreshing(false);
             }
         });
 
+        product_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                assert suppliers.get(i)!=null;
+                ((MyAppData)SupplierActivity.this.getApplication()).setSupplier(suppliers.get(i));
+                // TODO: Add StartActivity call here
+            }
+        });
 
-
+        refreshSupplierCount();
 
     }
 
+    public void refreshSupplierCount() {
+
+        if (supplierTotal!=null && suppliers!=null) {
+            String quantity = "Total Suppliers : " + String.valueOf(suppliers.size());
+            supplierTotal.setText(quantity);
+        }
+
+    }
 
 }

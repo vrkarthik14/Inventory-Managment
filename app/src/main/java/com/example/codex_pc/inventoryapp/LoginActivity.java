@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -47,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         permissions.add(WRITE_EXTERNAL_STORAGE);
         permissions.add(READ_EXTERNAL_STORAGE);
         permissions.add(CALL_PHONE);
+        permissions.add(CAMERA);
 
         permissionsToRequest = findUnAskedPermissions(permissions);
         //get the permissions we have asked for before but are not granted..

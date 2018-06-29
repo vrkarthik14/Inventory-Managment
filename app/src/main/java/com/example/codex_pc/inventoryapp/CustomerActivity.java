@@ -72,6 +72,7 @@ public class CustomerActivity extends AppCompatActivity {
                 assert customers.get(i)!=null;
                 ((MyAppData)CustomerActivity.this.getApplication()).setCustomer(customers.get(i));
                 // TODO: Add StartActivity call here
+                startActivity(new Intent(CustomerActivity.this,ViewActivity.class));
             }
         });
 

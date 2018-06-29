@@ -100,28 +100,32 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
+        try{
+            if (requestCode == RC_SIGN_IN) {
+                IdpResponse response = IdpResponse.fromResultIntent(data);
 
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
-                Log.d("LoginPage","User has successfully logged in/created the account");
-                // ...
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-                assert response != null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Log.d("LoginPage","Login/SignUp failed due to " + Objects.requireNonNull(response.getError()).getErrorCode());
+                if (resultCode == RESULT_OK) {
+                    // Successfully signed in
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                    Log.d("LoginPage","User has successfully logged in/created the account");
+                    // ...
                 } else {
-                    Log.d("LoginPage","Login/SignUp has failed");
+                    // Sign in failed. If response is null the user canceled the
+                    // sign-in flow using the back button. Otherwise check
+                    // response.getError().getErrorCode() and handle the error.
+                    // ...
+                    assert response != null;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        Log.d("LoginPage","Login/SignUp failed due to " + Objects.requireNonNull(response.getError()).getErrorCode());
+                    } else {
+                        Log.d("LoginPage","Login/SignUp has failed");
+                    }
                 }
             }
+        }catch (Exception e){
+            Log.i("errorOccured",e.toString());
         }
     }
 

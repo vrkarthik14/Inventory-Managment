@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //((MyAppData)this.getApplication()).updateProductQuantity("Gaming Machine v2",4,true);
+        ((MyAppData)this.getApplication()).addListeners();
 
         /* Supplier supplier = new Supplier("Akhilesh","Why should i tell you","someone@gmail.com","9999999999","Voltronex",null);
 

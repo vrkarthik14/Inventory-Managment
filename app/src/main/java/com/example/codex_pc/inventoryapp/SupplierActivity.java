@@ -72,6 +72,7 @@ public class SupplierActivity extends AppCompatActivity {
                 assert suppliers.get(i)!=null;
                 ((MyAppData)SupplierActivity.this.getApplication()).setSupplier(suppliers.get(i));
                 // TODO: Add StartActivity call here
+                startActivity(new Intent(SupplierActivity.this,ViewActivity.class));
             }
         });
 

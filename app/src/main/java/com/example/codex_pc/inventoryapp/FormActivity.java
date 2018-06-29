@@ -133,6 +133,7 @@ public class FormActivity extends AppCompatActivity {
 
                 ((MyAppData) FormActivity.this.getApplication()).pushProduct(product);
                 ((MyAppData)FormActivity.this.getApplication()).pushTransaction(transaction);
+                ((MyAppData)FormActivity.this.getApplication()).pushSupllier(supplier);
                 dismissDialog();
                 finish();
             }

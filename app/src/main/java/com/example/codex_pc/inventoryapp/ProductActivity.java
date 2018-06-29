@@ -74,6 +74,7 @@ public class ProductActivity extends AppCompatActivity {
                 assert products.get(i)!=null;
                 ((MyAppData)ProductActivity.this.getApplication()).setProduct(products.get(i));
                 //TODO: Add startActivity call here
+                startActivity(new Intent(ProductActivity.this,ViewActivity.class));
             }
         });
 

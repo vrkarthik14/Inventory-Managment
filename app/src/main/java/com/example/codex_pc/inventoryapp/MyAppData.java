@@ -16,16 +16,19 @@ import java.util.Objects;
 
 public class MyAppData extends Application{
 
+    //Reference to the database which can be used in any activity when ever required is used by ((MyAppData)getAppliaction())._methode_name_();
     DatabaseReference product_databaseReference,supplier_databaseReference,transaction_databaseReference,customer_databaseReference;
     ArrayList<Product> products;
     ArrayList<Supplier> suppliers;
     ArrayList<Customer> customers;
     ArrayList<Transaction> transactions;
 
+    //Classes related to adding products, customers, transactions
     Product product;
     Supplier supplier;
     Customer customer;
     Transaction transaction;
+
 
     int selection = 0;
     String scannedID = "false/";
@@ -44,6 +47,12 @@ public class MyAppData extends Application{
         transaction_databaseReference = FirebaseDatabase.getInstance().getReference().child("transactions");
         customer_databaseReference = FirebaseDatabase.getInstance().getReference().child("customers");
 
+    }
+
+
+    //Listeners for database change
+    public void addListeners() {
+
         product_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -52,6 +61,7 @@ public class MyAppData extends Application{
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+
                 Product product = dataSnapshot.getValue(Product.class);
                 ArrayList<String> names = new ArrayList<>();
                 for (Product p : products){
@@ -59,6 +69,7 @@ public class MyAppData extends Application{
                 }
                 assert product != null;
                 products.set(names.indexOf(product.getName()), product);
+
             }
 
             @Override
@@ -77,6 +88,7 @@ public class MyAppData extends Application{
             }
         });
 
+        //Listener for customer change
         customer_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -106,6 +118,7 @@ public class MyAppData extends Application{
             }
         });
 
+        //Listener for supplier change
         supplier_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -136,6 +149,7 @@ public class MyAppData extends Application{
             }
         });
 
+        //Listener for transaction changes
         transaction_databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -167,6 +181,8 @@ public class MyAppData extends Application{
 
     //==============================================================================================
 
+
+    //Update product qty when there is purchase of any product.
     public void updateProductQuantity(final String productName , final int quantity, final Boolean isAddition) {
 
         final String[] parentNode = new String[1];
